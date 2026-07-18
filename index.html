@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NashmiMC Staff Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#070b14;
+  --bg-1:#0c1424;
+  --bg-2:#111d33;
+  --panel:#0f1a2e;
+  --panel-2:#132542;
+  --line:#1f3352;
+  --line-soft:#182a47;
+  --sky:#38bdf8;
+  --sky-dim:#1a3a52;
+  --indigo:#6366f1;
+  --gold:#e0b34c;
+  --gold-dim:#3a2f14;
+  --green:#3ecf8e;
+  --green-dim:#123626;
+  --red:#f16565;
+  --red-dim:#3a1620;
+  --orange:#f0a24d;
+  --orange-dim:#3a2712;
+  --text-0:#eef3fb;
+  --text-1:#a9b7cf;
+  --text-2:#6c7c99;
+  --radius:14px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:radial-gradient(circle at 80% -10%, #14243f 0%, var(--bg-0) 45%);
+  color:var(--text-0);
+  font-family:'Tajawal',sans-serif;
+  min-height:100vh;
+  direction:rtl;
+}
+h1,h2,h3,.disp{font-family:'Rajdhani','Tajawal',sans-serif; letter-spacing:.3px;}
+::selection{background:var(--sky-dim);}
+a{color:inherit;}
+button{font-family:inherit;cursor:pointer;}
+.hidden{display:none !important;}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;}
+
+/* ---------- Login ---------- */
+#loginScreen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  position:relative;
+  overflow:hidden;
+}
+#loginScreen::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size:42px 42px;
+  opacity:.25;
+  mask-image:radial-gradient(circle at 50% 40%, black 0%, transparent 70%);
+}
+.login-card{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:420px;
+  background:linear-gradient(180deg, var(--panel-2), var(--panel));
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:36px 32px 28px;
+  box-shadow:0 30px 80px -30px rgba(0,0,0,.7);
+}
+.logo-block{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:6px;}
+.logo-mark{
+  width:46px;height:46px;border-radius:11px;
+  background:linear-gradient(145deg, var(--sky), var(--indigo));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Rajdhani';font-weight:700;font-size:19px;color:#04101d;
+  box-shadow:0 8px 22px -6px rgba(56,189,248,.55);
+  position:relative;
+}
+.logo-mark::after{
+  content:"";position:absolute;inset:-2px;border-radius:13px;
+  border:1px solid rgba(56,189,248,.4);
+}
+.logo-title{font-family:'Rajdhani';font-weight:700;font-size:22px;line-height:1;}
+.logo-title span{color:var(--sky);}
+.login-tag{text-align:center;color:var(--text-2);font-size:12.5px;margin:2px 0 26px;}
+.notice-strip{
+  background:var(--sky-dim);
+  border:1px solid #24557a;
+  color:#bfe6fb;
+  font-size:12.5px;
+  border-radius:10px;
+  padding:10px 14px;
+  text-align:center;
+  margin-bottom:22px;
+  line-height:1.6;
+}
+.field-label{font-size:12.5px;color:var(--text-1);margin-bottom:6px;display:block;font-weight:500;}
+.field{
+  width:100%;background:var(--bg-1);border:1px solid var(--line);color:var(--text-0);
+  border-radius:10px;padding:11px 13px;font-size:14px;margin-bottom:15px;outline:none;
+  transition:border-color .15s;
+}
+.field:focus{border-color:var(--sky);}
+.row-between{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;font-size:12.5px;color:var(--text-1);}
+.chk{display:flex;align-items:center;gap:6px;}
+.link-btn{background:none;border:none;color:var(--sky);font-size:12.5px;padding:0;}
+.btn-primary{
+  width:100%;padding:12px;border-radius:10px;border:none;
+  background:linear-gradient(90deg, var(--sky), var(--indigo));
+  color:#04101d;font-weight:700;font-size:14.5px;font-family:'Rajdhani';letter-spacing:.4px;
+  box-shadow:0 10px 24px -8px rgba(56,189,248,.5);
+}
+.btn-primary:hover{filter:brightness(1.07);}
+.or-divider{display:flex;align-items:center;gap:10px;color:var(--text-2);font-size:11.5px;margin:16px 0;}
+.or-divider::before,.or-divider::after{content:"";flex:1;height:1px;background:var(--line);}
+.btn-discord{
+  width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);
+  background:var(--bg-1);color:var(--text-0);font-size:13.5px;font-weight:500;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-discord:hover{border-color:#5865f2;}
+.role-demo{margin-top:22px;padding-top:18px;border-top:1px dashed var(--line);}
+.role-demo p{font-size:11.5px;color:var(--text-2);margin:0 0 8px;text-align:center;}
+.role-grid{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+.role-chip{
+  font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--line);
+  background:var(--bg-1);color:var(--text-1);
+}
+.role-chip:hover{border-color:var(--sky);color:var(--sky);}
+
+/* ---------- App shell ---------- */
+#app{display:none;min-height:100vh;}
+.shell{display:flex;min-height:100vh;}
+.sidebar{
+  width:250px;flex:0 0 250px;
+  background:linear-gradient(180deg, var(--bg-1), var(--bg-0));
+  border-left:1px solid var(--line-soft);
+  padding:22px 16px;display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.side-logo{display:flex;align-items:center;gap:10px;padding:0 4px 20px;}
+.side-logo .logo-mark{width:36px;height:36px;font-size:15px;border-radius:9px;}
+.side-logo .name{font-family:'Rajdhani';font-weight:700;font-size:15.5px;}
+.side-logo .name span{color:var(--sky);}
+.nav-group-label{font-size:10.5px;color:var(--text-2);text-transform:uppercase;letter-spacing:1px;margin:16px 6px 8px;font-weight:700;}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;
+  color:var(--text-1);font-size:13.5px;margin-bottom:2px;border:1px solid transparent;
+  cursor:pointer;font-weight:500;
+}
+.nav-item .ic{width:18px;text-align:center;font-size:14px;opacity:.85;}
+.nav-item:hover{background:var(--bg-2);color:var(--text-0);}
+.nav-item.active{background:var(--sky-dim);color:#c9ecfc;border-color:#23496a;}
+.nav-item .badge{
+  margin-inline-start:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;
+  padding:1px 6px;border-radius:20px;
+}
+.sidebar-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);}
+.logout-btn{
+  width:100%;background:none;border:1px solid var(--line);color:var(--text-1);
+  border-radius:9px;padding:9px;font-size:12.5px;
+}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+.main{flex:1;min-width:0;}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 26px;border-bottom:1px solid var(--line-soft);
+  background:rgba(7,11,20,.6);backdrop-filter:blur(6px);
+  position:sticky;top:0;z-index:5;
+}
+.topbar h1{font-size:18px;margin:0;font-weight:700;}
+.topbar .sub{font-size:12px;color:var(--text-2);margin-top:2px;}
+.top-right{display:flex;align-items:center;gap:14px;}
+.icon-btn{
+  position:relative;width:36px;height:36px;border-radius:10px;background:var(--bg-1);
+  border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--text-1);
+}
+.icon-btn:hover{color:var(--sky);border-color:var(--sky);}
+.icon-btn .dot{position:absolute;top:6px;left:6px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg-1);}
+.who{display:flex;align-items:center;gap:9px;padding-inline-start:12px;border-inline-start:1px solid var(--line-soft);}
+.avatar{width:34px;height:34px;border-radius:9px;background:linear-gradient(145deg,var(--indigo),var(--sky));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#04101d;font-family:'Rajdhani';}
+.who .nm{font-size:13px;font-weight:600;}
+.who .rk{font-size:11px;color:var(--gold);}
+
+.content{padding:24px 26px 60px;max-width:1280px;}
+.page{display:none;}
+.page.active{display:block;animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* generic components */
+.grid{display:grid;gap:16px;}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr);}.grid-3{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:720px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr;}}
+
+.card{
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line);border-radius:var(--radius);padding:18px;
+}
+.stat-card .lbl{font-size:12px;color:var(--text-2);margin-bottom:8px;}
+.stat-card .val{font-family:'Rajdhani';font-size:26px;font-weight:700;}
+.stat-card .foot{font-size:11.5px;color:var(--text-2);margin-top:6px;}
+.stat-card.accent-sky .val{color:var(--sky);}
+.stat-card.accent-gold .val{color:var(--gold);}
+.stat-card.accent-green .val{color:var(--green);}
+.stat-card.accent-red .val{color:var(--red);}
+
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px;}
+.section-title h2{font-size:16px;margin:0;}
+.section-title .hint{font-size:12px;color:var(--text-2);}
+
+.progress-wrap{margin-top:10px;}
+.progress-track{height:10px;border-radius:20px;background:var(--bg-1);border:1px solid var(--line);overflow:hidden;position:relative;}
+.progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--sky),var(--indigo));position:relative;transition:width .5s ease;}
+.progress-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:shine 2.4s infinite;}
+@keyframes shine{0%{transform:translateX(-100%);}100%{transform:translateX(220%);}}
+.progress-meta{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-2);margin-top:6px;}
+
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.pill.green{background:var(--green-dim);color:var(--green);}
+.pill.red{background:var(--red-dim);color:var(--red);}
+.pill.orange{background:var(--orange-dim);color:var(--orange);}
+.pill.sky{background:var(--sky-dim);color:var(--sky);}
+.pill.gold{background:var(--gold-dim);color:var(--gold);}
+.pill.gray{background:var(--bg-2);color:var(--text-2);}
+
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:right;color:var(--text-2);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;padding:10px 12px;border-bottom:1px solid var(--line-soft);}
+td{padding:11px 12px;border-bottom:1px solid var(--line-soft);color:var(--text-0);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(56,189,248,.04);}
+.table-wrap{overflow-x:auto;}
+
+.btn{border-radius:9px;padding:8px 16px;font-size:12.5px;font-weight:600;border:1px solid var(--line);background:var(--bg-1);color:var(--text-0);}
+.btn:hover{border-color:var(--sky);color:var(--sky);}
+.btn.primary{background:linear-gradient(90deg,var(--sky),var(--indigo));border:none;color:#04101d;font-family:'Rajdhani';}
+.btn.primary:hover{filter:brightness(1.08);color:#04101d;}
+.btn.danger{border-color:var(--red);color:var(--red);background:var(--red-dim);}
+.btn.success{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+.btn.sm{padding:5px 11px;font-size:11.5px;}
+.btn.ghost{background:none;}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+
+.modal-bg{position:fixed;inset:0;background:rgba(3,6,12,.7);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;}
+.modal{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:24px;width:100%;max-width:460px;max-height:88vh;overflow-y:auto;}
+.modal h3{margin:0 0 16px;font-size:16px;}
+.modal-actions{display:flex;gap:10px;margin-top:18px;}
+.modal-actions .btn{flex:1;}
+
+.toast-wrap{position:fixed;bottom:22px;left:22px;z-index:100;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--panel-2);border:1px solid var(--line);border-inline-start:3px solid var(--sky);border-radius:10px;padding:12px 16px;font-size:13px;box-shadow:0 12px 30px -10px rgba(0,0,0,.6);min-width:220px;animation:toastin .2s ease;}
+@keyframes toastin{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.toast.success{border-inline-start-color:var(--green);}
+.toast.error{border-inline-start-color:var(--red);}
+
+.empty-state{text-align:center;padding:50px 20px;color:var(--text-2);}
+.empty-state .ic{font-size:30px;margin-bottom:10px;opacity:.6;}
+
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line-soft);margin-bottom:18px;}
+.tab-btn{padding:9px 4px;font-size:13px;color:var(--text-2);background:none;border:none;border-bottom:2px solid transparent;font-weight:600;margin-inline-end:16px;}
+.tab-btn.active{color:var(--sky);border-color:var(--sky);}
+
+.textarea{min-height:80px;resize:vertical;}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;}
+
+.announce-banner{
+  background:linear-gradient(90deg, var(--gold-dim), var(--panel));
+  border:1px solid #4a3a1c;border-inline-start:4px solid var(--gold);
+  border-radius:12px;padding:16px 18px;margin-bottom:18px;
+}
+.announce-banner h4{margin:0 0 6px;color:var(--gold);font-size:14px;}
+.announce-banner p{margin:0 0 12px;font-size:13px;color:var(--text-1);line-height:1.7;}
+
+.rank-badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--gold);border:1px solid #4a3a1c;background:var(--gold-dim);padding:3px 10px;border-radius:20px;}
+
+.timer-box{
+  background:var(--bg-1);border:1px solid var(--line);border-radius:14px;padding:22px;text-align:center;
+}
+.timer-box .clock{font-family:'Rajdhani';font-size:42px;font-weight:700;color:var(--sky);letter-spacing:1px;}
+.timer-box .label{font-size:12px;color:var(--text-2);margin-top:4px;}
+
+.leader-row{display:flex;align-items:center;gap:14px;padding:12px 6px;border-bottom:1px solid var(--line-soft);}
+.leader-row:last-child{border-bottom:none;}
+.leader-rank{width:26px;font-family:'Rajdhani';font-weight:700;color:var(--text-2);text-align:center;}
+.leader-rank.top1{color:var(--gold);font-size:16px;}
+.leader-rank.top2{color:#c9d3e0;}
+.leader-rank.top3{color:#d99a5b;}
+.leader-name{flex:1;}
+.leader-name .n{font-weight:600;font-size:13.5px;}
+.leader-name .r{font-size:11px;color:var(--text-2);}
+.leader-val{font-family:'Rajdhani';font-weight:700;color:var(--sky);}
+
+.small-muted{font-size:12px;color:var(--text-2);}
+.mt6{margin-top:6px;}.mt10{margin-top:10px;}.mt16{margin-top:16px;}.mt20{margin-top:20px;}
+.flex-between{display:flex;align-items:center;justify-content:space-between;}
+.gap8{gap:8px;}
+.wfull{width:100%;}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="logo-block">
+      <div class="logo-mark">N</div>
+      <div class="logo-title">Nashmi<span>MC</span></div>
+    </div>
+    <div class="login-tag">Staff Hub — بوابة إدارة موظفي السيرفر</div>
+
+    <div class="notice-strip">بوابة إدارة موظفي NashmiMC — النظام مخصص لأعضاء الطاقم المعتمدين فقط.</div>
+
+    <label class="field-label">اسم المستخدم أو البريد الإلكتروني</label>
+    <input class="field" id="loginUser" placeholder="مثال: nashmi_admin" />
+
+    <label class="field-label">كلمة المرور</label>
+    <input class="field" id="loginPass" type="password" placeholder="••••••••" />
+
+    <div class="row-between">
+      <label class="chk"><input type="checkbox" id="rememberMe" /> تذكرني</label>
+      <button class="link-btn" onclick="toast('تم إرسال رابط استعادة كلمة المرور إلى بريدك (تجريبي).','info')">استعادة كلمة المرور؟</button>
+    </div>
+
+    <button class="btn-primary" onclick="handleLogin()">تسجيل الدخول</button>
+
+    <div class="or-divider">أو</div>
+    <button class="btn-discord" onclick="toast('سيتم دعم تسجيل الدخول عبر Discord قريبًا.','info')">
+      <span>🎮</span> تسجيل الدخول باستخدام Discord
+    </button>
+
+    <div class="role-demo">
+      <p>وضع العرض التجريبي — تسجيل دخول سريع برتبة:</p>
+      <div class="role-grid" id="demoRoleGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP SHELL ============ -->
+<div id="app">
+  <div class="shell">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="side-logo">
+        <div class="logo-mark">N</div>
+        <div class="name">Nashmi<span>MC</span></div>
+      </div>
+
+      <div class="nav-group-label">عام</div>
+      <div class="nav-item" data-page="dashboard"><span class="ic">🏠</span> الرئيسية</div>
+      <div class="nav-item" data-page="attendance"><span class="ic">⏱️</span> الحضور والانصراف</div>
+      <div class="nav-item" data-page="points"><span class="ic">⭐</span> النقاط والترقيات</div>
+      <div class="nav-item" data-page="leave"><span class="ic">🌴</span> الإجازات</div>
+      <div class="nav-item" data-page="warnings"><span class="ic">⚠️</span> التحذيرات</div>
+      <div class="nav-item" data-page="tasks"><span class="ic">📋</span> المهام</div>
+      <div class="nav-item" data-page="reports"><span class="ic">🛡️</span> البلاغات</div>
+      <div class="nav-item" data-page="announcements"><span class="ic">📢</span> الإعلانات والاجتماعات</div>
+      <div class="nav-item" data-page="leaderboard"><span class="ic">🏆</span> الترتيب</div>
+      <div class="nav-item" data-page="profile"><span class="ic">👤</span> ملفي الشخصي</div>
+
+      <div class="nav-group-label" id="adminGroupLabel">الإدارة</div>
+      <div class="nav-item" data-page="admin-staff" data-admin="1"><span class="ic">🧑‍💼</span> إدارة الموظفين</div>
+      <div class="nav-item" data-page="admin-roles" data-admin="1"><span class="ic">🎚️</span> الرتب والصلاحيات</div>
+      <div class="nav-item" data-page="admin-stats" data-admin="1"><span class="ic">📊</span> التقارير والإحصائيات</div>
+      <div class="nav-item" data-page="admin-audit" data-admin="1"><span class="ic">🧾</span> سجل الإدارة</div>
+
+      <div class="sidebar-foot">
+        <button class="logout-btn" onclick="handleLogout()">تسجيل الخروج</button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="topbar">
+        <div>
+          <h1 id="pageTitle">الرئيسية</h1>
+          <div class="sub" id="pageSub">نظرة عامة على أداءك في الطاقم</div>
+        </div>
+        <div class="top-right">
+          <button class="icon-btn" onclick="switchPage('announcements')" title="الإشعارات">
+            🔔<span class="dot hidden" id="notifDot"></span>
+          </button>
+          <div class="who">
+            <div class="avatar" id="topAvatar">N</div>
+            <div>
+              <div class="nm" id="topName">—</div>
+              <div class="rk" id="topRank">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- ================= DASHBOARD ================= -->
+        <div class="page" id="page-dashboard">
+          <div id="dashAnnounce"></div>
+
+          <div class="grid grid-4">
+            <div class="card stat-card accent-sky">
+              <div class="lbl">النقاط الحالية</div>
+              <div class="val" id="dashPoints">0</div>
+              <div class="foot">إجمالي منذ الانضمام</div>
+            </div>
+            <div class="card stat-card accent-green">
+              <div class="lbl">ساعات هذا الأسبوع</div>
+              <div class="val" id="dashHoursWeek">0h</div>
+              <div class="foot" id="dashHoursMonth">0h هذا الشهر</div>
+            </div>
+            <div class="card stat-card accent-red">
+              <div class="lbl">تحذيرات نشطة</div>
+              <div class="val" id="dashWarnings">0</div>
+              <div class="foot">راجع صفحة التحذيرات</div>
+            </div>
+            <div class="card stat-card accent-gold">
+              <div class="lbl">مهام مكتملة</div>
+              <div class="val" id="dashTasks">0</div>
+              <div class="foot" id="dashRankPos">—</div>
+            </div>
+          </div>
+
+          <div class="section-title"><h2>التقدم نحو الترقية القادمة</h2></div>
+          <div class="card">
+            <div class="flex-between">
+              <div>
+                <span class="rank-badge" id="dashCurRank">—</span>
+                <span class="small-muted"> ← </span>
+                <span class="pill sky" id="dashNextRank">—</span>
+              </div>
+              <div class="small-muted" id="dashPointsToGo">—</div>
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-track"><div class="progress-fill" id="dashProgressFill" style="width:0%"></div></div>
+              <div class="progress-meta"><span id="dashProgMin">0</span><span id="dashProgMax">0</span></div>
+            </div>
+          </div>
+
+          <div class="grid grid-2 mt20">
+            <div class="card">
+              <div class="section-title" style="margin-top:0"><h2>آخر الأنشطة</h2></div>
+              <div id="dashActivity"></div>
+            </div>
+            <div class="card">
+              <div class="section-title" style="margin-top:0"><h2>حالتك الحالية</h2></div>
+              <div style="display:flex;flex-direction:column;gap:12px" id="dashStatusBox"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= ATTENDANCE ================= -->
+        <div class="page" id="page-attendance">
+          <div class="grid grid-2">
+            <div class="card timer-box">
+              <div class="clock" id="liveTimer">00:00:00</div>
+              <div class="label" id="timerStatusLabel">غير مسجل دخول للدوام</div>
+              <div class="mt16">
+                <select class="field" id="deptSelect" style="margin-bottom:10px">
+                  <option>Survival</option>
+                  <option>Skyblock</option>
+                  <option>Lobby</option>
+                  <option>Support Discord</option>
+                  <option>Development</option>
+                </select>
+                <button class="btn primary wfull" id="checkBtn" onclick="toggleCheck()">تسجيل الدخول إلى الدوام</button>
+              </div>
+            </div>
+            <div class="card">
+              <h3 style="margin-top:0">طلب تعديل جلسة دوام</h3>
+              <p class="small-muted">نسيت تسجيل الخروج؟ أرسل طلبًا لتعديل الوقت وستراجعه الإدارة.</p>
+              <label class="field-label">التاريخ</label>
+              <input class="field" type="date" id="fixDate" />
+              <label class="field-label">الوقت الصحيح للخروج</label>
+              <input class="field" type="time" id="fixTime" />
+              <label class="field-label">ملاحظة</label>
+              <textarea class="field textarea" id="fixNote" placeholder="اشرح السبب..."></textarea>
+              <button class="btn primary wfull" onclick="submitFixRequest()">إرسال الطلب للإدارة</button>
+            </div>
+          </div>
+
+          <div class="section-title"><h2>سجل الحضور</h2><span class="hint">تقارير أسبوعية وشهرية لساعات العمل</span></div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>الموظف</th><th>التاريخ</th><th>بداية</th><th>نهاية</th><th>المدة</th><th>القسم</th><th>الحالة</th></tr></thead>
+                <tbody id="attendanceTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= POINTS ================= -->
+        <div class="page" id="page-points">
+          <div class="grid grid-3">
+            <div class="card stat-card accent-sky"><div class="lbl">نقاطي الحالية</div><div class="val" id="ptsCurrent">0</div></div>
+            <div class="card stat-card accent-green"><div class="lbl">نقاط مضافة (الإجمالي)</div><div class="val" id="ptsAdded">0</div></div>
+            <div class="card stat-card accent-red"><div class="lbl">نقاط مخصومة (الإجمالي)</div><div class="val" id="ptsDeducted">0</div></div>
+          </div>
+
+          <div id="adminPointsBox" class="card mt20 hidden">
+            <h3 style="margin-top:0">منح / خصم نقاط</h3>
+            <div class="form-2col">
+              <div><label class="field-label">الموظف</label><select class="field" id="ptsStaffSelect"></select></div>
+              <div><label class="field-label">النوع</label>
+                <select class="field" id="ptsType"><option value="add">إضافة نقاط</option><option value="deduct">خصم نقاط</option></select>
+              </div>
+            </div>
+            <div class="form-2col">
+              <div><label class="field-label">عدد النقاط</label><input class="field" type="number" id="ptsAmount" placeholder="10" /></div>
+              <div><label class="field-label">السبب</label><input class="field" id="ptsReason" placeholder="مساعدة اللاعبين" /></div>
+            </div>
+            <label class="field-label">ملاحظات إضافية</label>
+            <textarea class="field textarea" id="ptsNotes"></textarea>
+            <button class="btn primary" onclick="submitPointsTx()">تنفيذ العملية</button>
+          </div>
+
+          <div class="section-title"><h2>سجل تعديل الترقيات</h2></div>
+          <div id="adminPromoBox" class="card hidden">
+            <p class="small-muted">تعديل المتطلبات المطلوبة (بالنقاط) للترقية بين الرتب:</p>
+            <div id="promoReqEditor" style="display:flex;flex-direction:column;gap:10px;margin-top:12px"></div>
+          </div>
+
+          <div class="section-title"><h2>جاهزون للترقية</h2><span class="hint">وصلوا للنقاط المطلوبة وبانتظار موافقة الإدارة</span></div>
+          <div class="card">
+            <div class="table-wrap"><table>
+              <thead><tr><th>الموظف</th><th>الرتبة الحالية</th><th>الرتبة التالية</th><th>النقاط</th><th>—</th></tr></thead>
+              <tbody id="readyPromoTable"></tbody>
+            </table></div>
+          </div>
+
+          <div class="section-title"><h2>سجل النقاط</h2></div>
+          <div class="card">
+            <div class="table-wrap"><table>
+              <thead><tr><th>الموظف</th><th>النوع</th><th>النقاط</th><th>السبب</th><th>بواسطة</th><th>التاريخ</th></tr></thead>
+              <tbody id="pointsLogTable"></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- ================= LEAVE ================= -->
+        <div class="page" id="page-leave">
+          <div class="grid grid-2">
+            <div class="card">
+              <h3 style="margin-top:0">تقديم طلب إجازة</h3>
+              <label class="field-label">نوع الإجازة</label>
+              <select class="field" id="leaveType"><option>إجازة عادية</option><option>ظرف طارئ</option><option>مرضية</option><option>غياب مؤقت عن السيرفر</option></select>
+              <div class="form-2col">
+                <div><label class="field-label">تاريخ البداية</label><input class="field" type="date" id="leaveStart" /></div>
+                <div><label class="field-label">تاريخ النهاية</label><input class="field" type="date" id="leaveEnd" /></div>
+              </div>
+              <label class="field-label">سبب الإجازة</label>
+              <textarea class="field textarea" id="leaveReason" placeholder="اشرح السبب باختصار..."></textarea>
+              <button class="btn primary wfull" onclick="submitLeave()">إرسال الطلب</button>
+            </div>
+            <div class="card">
+              <h3 style="margin-top:0">تقويم الإجازات الحالية</h3>
+              <div id="leaveCalendarList"></div>
+            </div>
+          </div>
+
+          <div class="section-title"><h2>طلبات الإجازة</h2></div>
+          <div class="card">
+            <div class="table-wrap"><table>
+              <thead><tr><th>الموظف</th><th>النوع</th><th>من</th><th>إلى</th><th>الأيام</th><th>الحالة</th><th id="leaveActionsHead">—</th></tr></thead>
+              <tbody id="leaveTable"></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- ================= WARNINGS ================= -->
+        <div class="page" id="page-warnings">
+          <div id="adminWarnBox" class="card hidden">
+            <h3 style="margin-top:0">إصدار تحذير جديد</h3>
+            <div class="form-2col">
+              <div><label class="field-label">الموظف</label><select class="field" id="warnStaffSelect"></select></div>
+              <div><label class="field-label">مستوى التحذير</label>
+                <select class="field" id="warnLevel">
+                  <option>تنبيه شفهي</option><option>تحذير أول</option><option>تحذير ثانٍ</option>
+                  <option>تحذير نهائي</option><option>إيقاف مؤقت</option><option>إزالة من الطاقم</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-2col">
+              <div><label class="field-label">نوع المخالفة</label><input class="field" id="warnType" placeholder="إساءة استخدام صلاحيات" /></div>
+              <div><label class="field-label">نقاط الخصم</label><input class="field" type="number" id="warnDeduct" placeholder="20" /></div>
+            </div>
+            <label class="field-label">سبب التحذير بالتفصيل</label>
+            <textarea class="field textarea" id="warnReason"></textarea>
+            <button class="btn danger" onclick="submitWarning()">إصدار التحذير</button>
+          </div>
+
+          <div class="section-title"><h2>التحذيرات</h2></div>
+          <div class="card">
+            <div class="table-wrap"><table>
+              <thead><tr><th>الموظف</th><th>المستوى</th><th>النوع</th><th>الخصم</th><th>بواسطة</th><th>الحالة</th><th>—</th></tr></thead>
+              <tbody id="warningsTable"></tbody>
+            </table></div>
+          </div>
+
+          <div class="section-title"><h2>الاعتراضات</h2></div>
+          <div class="card">
+            <div class="table-wrap"><table>
+              <thead><tr><th>الموظف</th><th>التحذير</th><th>نص الاعتراض</th><th>الحالة</th><th id="appealActionsHead">—</th></tr></thead>
+              <tbody id="appealsTable"></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- ================= TASKS ================= -->
+        <div class="page" id="page-tasks">
+          <div id="adminTaskBox" class="card hidden">
+            <h3 style="margin-top:0">إنشاء مهمة جديدة</h3>
+            <div class="form-2col">
+              <div><label class="field-label">عنوان المهمة</label><input class="field" id="taskTitle" placeholder="تحديث لوحة المتجر" /></div>
+              <div><label class="field-label">الموظف المسؤول</label><select class="field" id="taskStaffSelect"></select></div>
+            </div>
+            <div class="form-2col">
+              <div><label class="field-label">الأولوية</label>
+                <select class="field" id="taskPriority"><option>منخفضة</option><option>متوسطة</option><option selected>عالية</option><option>عاجلة</option></select>
+              </div>
+              <div><label class="field-label">الموعد النهائي</label><input class="field" type="date" id="taskDeadline" /></div>
+            </div>
+            <div class="form-2col">
+              <div><label class="field-label">نقاط الإنجاز</label><input class="field" type="number" id="taskPoints" placeholder="15" /></div>
+              <div></div>
+            </div>
+            <label class="field-label">وصف المهمة</label>
+            <textarea class="field textarea" id="taskDesc"></textarea>
+            <button class="btn primary" onclick="submitTask()">إنشاء المهمة</button>
+          </div>
+
+          <div class="section-title"><h2>المهام</h2></div>
+          <div class="card">
+            <div class="table-wrap"><table>
+              <thead><tr><th>العنوان</th><th>المسؤول</th><th>الأولوية</th><th>الموعد النهائي</th><th>النقاط</th><th>الحالة</th><th>—</th></tr></thead>
+              <tbody id="tasksTable"></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- ================= REPORTS (complaints) ================= -->
+        <div class="page" id="page-reports">
+          <div class="card">
+            <h3 style="margin-top:0">تسجيل بلاغ جديد</h3>
+            <div class="form-2col">
+              <div><label class="field-label">اسم اللاعب المبلغ عنه</label><input class="field" id="repPlayer" placeholder="Player123" /></div>
+              <div><label class="field-label">نوع البلاغ</label><input class="field" id="repType" placeholder="غش / إساءة لفظية" /></div>
+            </div>
+            <div class="form-2col">
+              <div><label class="field-label">السيرفر</label>
+                <select class="field" id="repServer"><option>Survival</option><option>Skyblock</option><option>Lobby</option></select>
+              </div>
+              <div><label class="field-label">الإجراء المتخذ</label><input class="field" id="repAction" placeholder="حظر مؤقت 3 أيام" /></div>
+            </div>
+            <label class="field-label">وصف المشكلة</label>
+            <textarea class="field textarea" id="repDesc"></textarea>
+            <button class="btn primary" onclick="submitReport()">حفظ البلاغ</button>
+          </div>
+
+          <div class="section-title"><h2>سجل البلاغات</h2></div>
+          <div class="card">
+            <div class="table-wrap"><table>
+              <thead><tr><th>اللاعب</th><th>الموظف</th><th>النوع</th><th>السيرفر</th><th>الإجراء</th><th>التاريخ</th></tr></thead>
+              <tbody id="reportsTable"></tbody>
+            </table></div>
+          </div>
+
+          <div class="section-title"><h2>إحصائيات البلاغات لكل موظف</h2></div>
+          <div class="card"><div id="reportStatsBox"></div></div>
+        </div>
+
+        <!-- ================= ANNOUNCEMENTS ================= -->
+        <div class="page" id="page-announcements">
+          <div id="adminAnnounceBox" class="card hidden">
+            <h3 style="margin-top:0">نشر إعلان جديد</h3>
+            <label class="field-label">العنوان</label>
+            <input class="field" id="annTitle" placeholder="اجتماع الطاقم الأسبوعي" />
+            <label class="field-label">المحتوى</label>
+            <textarea class="field textarea" id="annContent"></textarea>
+            <div class="form-2col">
+              <div><label class="field-label">درجة الأهمية</label>
+                <select class="field" id="annPriority"><option>عادية</option><option>مهمة</option><option>عاجلة</option></select>
+              </div>
+              <div><label class="field-label">يتطلب تأكيد القراءة</label>
+                <select class="field" id="annRequireRead"><option value="1">نعم</option><option value="0">لا</option></select>
+              </div>
+            </div>
+            <button class="btn primary" onclick="submitAnnouncement()">نشر الإعلان</button>
+          </div>
+
+          <div class="section-title"><h2>الإعلانات</h2></div>
+          <div id="announcementsList"></div>
+
+          <div id="adminMeetingBox" class="card mt20 hidden">
+            <h3 style="margin-top:0">إنشاء اجتماع جديد</h3>
+            <div class="form-2col">
+              <div><label class="field-label">اسم الاجتماع</label><input class="field" id="mtgName" placeholder="اجتماع المديرين" /></div>
+              <div><label class="field-label">التاريخ والوقت</label><input class="field" type="datetime-local" id="mtgTime" /></div>
+            </div>
+            <div class="form-2col">
+              <div><label class="field-label">رابط الاجتماع</label><input class="field" id="mtgLink" placeholder="discord.gg/..." /></div>
+              <div><label class="field-label">موضوع الاجتماع</label><input class="field" id="mtgTopic" placeholder="مراجعة أداء الشهر" /></div>
+            </div>
+            <button class="btn primary" onclick="submitMeeting()">إنشاء الاجتماع</button>
+          </div>
+
+          <div class="section-title"><h2>الاجتماعات القادمة</h2></div>
+          <div class="card"><div id="meetingsList"></div></div>
+        </div>
+
+        <!-- ================= LEADERBOARD ================= -->
+        <div class="page" id="page-leaderboard">
+          <div class="tabs">
+            <button class="tab-btn active" data-lb="points" onclick="setLeaderTab('points')">أعلى النقاط</button>
+            <button class="tab-btn" data-lb="hours" onclick="setLeaderTab('hours')">أكثر ساعات عمل</button>
+            <button class="tab-btn" data-lb="tasks" onclick="setLeaderTab('tasks')">أكثر مهام</button>
+            <button class="tab-btn" data-lb="reports" onclick="setLeaderTab('reports')">أكثر بلاغات</button>
+          </div>
+          <div class="card"><div id="leaderboardList"></div></div>
+        </div>
+
+        <!-- ================= PROFILE ================= -->
+        <div class="page" id="page-profile">
+          <div class="grid grid-3">
+            <div class="card" style="text-align:center">
+              <div class="avatar" style="width:80px;height:80px;font-size:28px;border-radius:16px;margin:0 auto 12px">?</div>
+              <div id="profName" style="font-weight:700;font-size:16px"></div>
+              <div id="profRank" class="rank-badge mt6" style="display:inline-flex"></div>
+              <div class="small-muted mt10" id="profJoined"></div>
+            </div>
+            <div class="card">
+              <div class="lbl small-muted">Minecraft</div><div id="profMc" class="mt6" style="font-weight:600"></div>
+              <div class="lbl small-muted mt16">Discord</div><div id="profDiscord" class="mt6" style="font-weight:600"></div>
+              <div class="lbl small-muted mt16">البريد الإلكتروني</div><div id="profEmail" class="mt6" style="font-weight:600"></div>
+            </div>
+            <div class="card">
+              <div class="lbl small-muted">القسم</div><div id="profDept" class="mt6" style="font-weight:600"></div>
+              <div class="lbl small-muted mt16">إجمالي ساعات العمل</div><div id="profHours" class="mt6" style="font-weight:600"></div>
+              <div class="lbl small-muted mt16">تقييم الإدارة</div><div id="profRating" class="mt6" style="font-weight:600"></div>
+            </div>
+          </div>
+
+          <div class="section-title"><h2>سجل الترقيات</h2></div>
+          <div class="card"><div id="profPromoHistory"></div></div>
+
+          <div id="profAdminNotesBox" class="card mt20 hidden">
+            <h3 style="margin-top:0">ملاحظات إدارية سرية</h3>
+            <p class="small-muted">تظهر هذه الملاحظات للمديرين فقط.</p>
+            <div id="profAdminNotes" class="mt10"></div>
+          </div>
+        </div>
+
+        <!-- ================= ADMIN: STAFF ================= -->
+        <div class="page" id="page-admin-staff">
+          <div class="flex-between">
+            <div></div>
+            <button class="btn primary" onclick="openAddStaffModal()">+ إضافة موظف جديد</button>
+          </div>
+          <div class="section-title"><h2>قائمة الموظفين</h2></div>
+          <div class="card">
+            <div class="table-wrap"><table>
+              <thead><tr><th>الموظف</th><th>الرتبة</th><th>القسم</th><th>النقاط</th><th>الحالة</th><th>—</th></tr></thead>
+              <tbody id="staffAdminTable"></tbody>
+            </table></div>
+          </div>
+        </div>
+
+        <!-- ================= ADMIN: ROLES ================= -->
+        <div class="page" id="page-admin-roles">
+          <div class="section-title"><h2>الرتب الحالية (بحسب الأولوية)</h2><span class="hint">اسحب لإعادة الترتيب غير متاح في هذا العرض التجريبي</span></div>
+          <div class="card"><div id="rolesList" style="display:flex;flex-direction:column;gap:8px"></div></div>
+          <div class="card mt20">
+            <h3 style="margin-top:0">إضافة رتبة جديدة</h3>
+            <div class="form-2col">
+              <div><label class="field-label">اسم الرتبة</label><input class="field" id="newRoleName" placeholder="مثال: Community Manager" /></div>
+              <div><label class="field-label">لون التمييز</label>
+                <select class="field" id="newRoleColor"><option value="sky">أزرق</option><option value="gold">ذهبي</option><option value="green">أخضر</option><option value="red">أحمر</option></select>
+              </div>
+            </div>
+            <button class="btn primary" onclick="addNewRole()">إضافة الرتبة</button>
+          </div>
+        </div>
+
+        <!-- ================= ADMIN: STATS ================= -->
+        <div class="page" id="page-admin-stats">
+          <div class="grid grid-4">
+            <div class="card stat-card accent-sky"><div class="lbl">إجمالي الموظفين</div><div class="val" id="statTotalStaff">0</div></div>
+            <div class="card stat-card accent-green"><div class="lbl">موظفون نشطون</div><div class="val" id="statActiveStaff">0</div></div>
+            <div class="card stat-card accent-gold"><div class="lbl">في إجازة حاليًا</div><div class="val" id="statOnLeave">0</div></div>
+            <div class="card stat-card accent-red"><div class="lbl">تحذيرات نشطة</div><div class="val" id="statActiveWarnings">0</div></div>
+          </div>
+          <div class="grid grid-2 mt20">
+            <div class="card"><h3 style="margin-top:0">إجمالي ساعات العمل هذا الشهر</h3><div id="statHoursChart"></div></div>
+            <div class="card"><h3 style="margin-top:0">المهام: مكتملة مقابل متأخرة</h3><div id="statTasksChart"></div></div>
+          </div>
+          <div class="section-title"><h2>الموظفون الجاهزون للترقية</h2></div>
+          <div class="card"><div id="statReadyPromo"></div></div>
+          <div class="section-title"><h2>تصدير التقارير</h2></div>
+          <div class="card" style="display:flex;gap:10px">
+            <button class="btn" onclick="toast('سيتم تصدير التقرير بصيغة PDF (تجريبي).','info')">تصدير PDF</button>
+            <button class="btn" onclick="toast('سيتم تصدير التقرير بصيغة Excel (تجريبي).','info')">تصدير Excel</button>
+          </div>
+        </div>
+
+        <!-- ================= ADMIN: AUDIT ================= -->
+        <div class="page" id="page-admin-audit">
+          <div class="section-title"><h2>سجل الإجراءات الحساسة</h2><span class="hint">لا يمكن حذف هذا السجل إلا بواسطة Owner</span></div>
+          <div class="card">
+            <div class="table-wrap"><table>
+              <thead><tr><th>الإجراء</th><th>التفاصيل</th><th>بواسطة</th><th>التاريخ والوقت</th></tr></thead>
+              <tbody id="auditTable"></tbody>
+            </table></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ======================================================================
+   NashmiMC Staff Hub — demo prototype
+   Data persists via window.storage (shared demo dataset for the whole team).
+   This is a functional front-end prototype with mock data, as requested,
+   ahead of connecting a real backend (Next.js/Supabase/Postgres).
+====================================================================== */
+
+const RANKS = ["Owner","Co-Owner","Network Manager","Staff Manager","Developer Manager","Administrator","Senior Moderator","Moderator","Helper","Trial Helper","Developer"];
+const ADMIN_RANKS = ["Owner","Co-Owner","Network Manager","Staff Manager","Developer Manager","Administrator"];
+
+let DB = null; // shared object, loaded from storage
+let CURRENT_USER_ID = null;
+let timerInterval = null;
+let leaderTab = 'points';
+
+/* ---------------- storage helpers ---------------- */
+async function loadDB(){
+  try{
+    const res = await window.storage.get('nashmimc_db', true);
+    if(res && res.value) return JSON.parse(res.value);
+  }catch(e){ /* not found yet */ }
+  return null;
+}
+async function saveDB(){
+  try{
+    await window.storage.set('nashmimc_db', JSON.stringify(DB), true);
+  }catch(e){ console.error('storage save failed', e); }
+}
+
+function seedDB(){
+  const now = Date.now();
+  const day = 86400000;
+  return {
+    promoRequirements: {
+      "Trial Helper->Helper": 100,
+      "Helper->Moderator": 300,
+      "Moderator->Senior Moderator": 600,
+      "Senior Moderator->Administrator": 1000
+    },
+    roles: RANKS.map((r,i)=>({name:r, order:i})),
+    staff: [
+      {id:"u1", name:"Nashmi Owner", mc:"NashmiKing", discord:"nashmi#0001", email:"owner@nashmimc.gg", rank:"Owner", dept:"Network", joined: now-400*day, points:2500, status:"online", rating:"ممتاز", notes:"مؤسس السيرفر."},
+      {id:"u2", name:"سارة المدير", mc:"Sarah_Mod", discord:"sarah#1122", email:"sarah@nashmimc.gg", rank:"Administrator", dept:"Survival", joined: now-260*day, points:1150, status:"online", rating:"جيد جدًا", notes:"تتعامل بحزم مع البلاغات."},
+      {id:"u3", name:"علي المشرف", mc:"AliMod_", discord:"ali#9081", email:"ali@nashmimc.gg", rank:"Senior Moderator", dept:"Skyblock", joined: now-200*day, points:640, status:"offline", rating:"جيد", notes:""},
+      {id:"u4", name:"يوسف مساعد", mc:"YosifHelps", discord:"yosif#4433", email:"yosif@nashmimc.gg", rank:"Moderator", dept:"Lobby", joined: now-120*day, points:320, status:"online", rating:"جيد", notes:""},
+      {id:"u5", name:"ريم متدربة", mc:"ReemT", discord:"reem#7712", email:"reem@nashmimc.gg", rank:"Trial Helper", dept:"Support Discord", joined: now-20*day, points:85, status:"on_leave", rating:"قيد التقييم", notes:"واعدة، متابعة أسبوعية."},
+      {id:"u6", name:"محمد مطور", mc:"MoDev", discord:"mo#2020", email:"mo@nashmimc.gg", rank:"Developer", dept:"Development", joined: now-150*day, points:410, status:"online", rating:"جيد جدًا", notes:""}
+    ],
+    attendance: [
+      {id:"a1", staffId:"u2", date: dstr(now-1*day), start: tstr(now-1*day-6*3600000), end: tstr(now-1*day-2*3600000), durationMin: 240, dept:"Survival", note:"", status:"مكتملة"},
+      {id:"a2", staffId:"u4", date: dstr(now-2*day), start:"18:00", end:"21:30", durationMin:210, dept:"Lobby", note:"", status:"مكتملة"},
+      {id:"a3", staffId:"u3", date: dstr(now-3*day), start:"15:00", end:"19:00", durationMin:240, dept:"Skyblock", note:"", status:"تم تعديلها بواسطة الإدارة"}
+    ],
+    openSessions: {},
+    fixRequests: [],
+    points: [
+      {id:"p1", staffId:"u4", type:"add", amount:20, reason:"مساعدة اللاعبين في Lobby", by:"سارة المدير", date: dstr(now-2*day)},
+      {id:"p2", staffId:"u3", type:"deduct", amount:15, reason:"تأخر عن اجتماع الطاقم", by:"Nashmi Owner", date: dstr(now-5*day)},
+      {id:"p3", staffId:"u5", type:"add", amount:10, reason:"اقتراح مفيد لتحسين المتجر", by:"سارة المدير", date: dstr(now-1*day)}
+    ],
+    promotionApprovals: [],
+    leave: [
+      {id:"l1", staffId:"u5", type:"إجازة عادية", start: dstr(now), end: dstr(now+3*day), days:4, reason:"سفر عائلي", status:"مقبول", adminNote:"موافق، بالتوفيق", file:false},
+      {id:"l2", staffId:"u3", type:"ظرف طارئ", start: dstr(now+5*day), end: dstr(now+6*day), days:2, reason:"ظرف عائلي مفاجئ", status:"قيد المراجعة", adminNote:"", file:false}
+    ],
+    warnings: [
+      {id:"w1", staffId:"u3", level:"تحذير أول", type:"تأخر متكرر", reason:"تأخر عن الدوام 3 مرات خلال أسبوعين بدون إشعار مسبق.", deduct:15, by:"Nashmi Owner", issued: dstr(now-5*day), status:"نشط"}
+    ],
+    appeals: [],
+    tasks: [
+      {id:"t1", title:"تحديث قواعد Survival", staffId:"u2", priority:"عالية", created: dstr(now-4*day), deadline: dstr(now+2*day), points:15, status:"قيد التنفيذ", desc:"مراجعة وتحديث قوانين السيرفر بعد آخر تحديث."},
+      {id:"t2", title:"مراجعة تذاكر الدعم المتأخرة", staffId:"u4", priority:"متوسطة", created: dstr(now-6*day), deadline: dstr(now-1*day), points:10, status:"متأخرة", desc:"عدة تذاكر دعم بلا رد منذ أكثر من 3 أيام."},
+      {id:"t3", title:"تصميم بانر الإعلان الجديد", staffId:"u6", priority:"منخفضة", created: dstr(now-2*day), deadline: dstr(now+5*day), points:8, status:"جديدة", desc:"بانر للإعلان عن موسم Skyblock الجديد."}
+    ],
+    reports: [
+      {id:"r1", player:"GriefKing22", staffId:"u4", type:"تخريب (Griefing)", server:"Survival", desc:"تخريب منزل لاعب آخر بدون إذن.", action:"حظر مؤقت 7 أيام", date: dstr(now-1*day)},
+      {id:"r2", player:"ToxicPlayerX", staffId:"u3", type:"إساءة لفظية", server:"Lobby", desc:"إساءة متكررة في الشات العام.", action:"إسكات 24 ساعة", date: dstr(now-3*day)}
+    ],
+    announcements: [
+      {id:"an1", title:"اجتماع الطاقم الشهري", content:"يرجى من جميع أعضاء الطاقم حضور الاجتماع الشهري لمراجعة الأداء والخطط القادمة.", priority:"مهمة", date: dstr(now-1*day), requireRead:true, reads:["u1"]},
+      {id:"an2", title:"تحديث نظام النقاط", content:"تم تعديل عدد النقاط المطلوبة للترقية من Moderator إلى Senior Moderator.", priority:"عادية", date: dstr(now-4*day), requireRead:false, reads:[]}
+    ],
+    meetings: [
+      {id:"m1", name:"اجتماع الطاقم الأسبوعي", time: new Date(now+2*day).toISOString().slice(0,16), link:"discord.gg/nashmimc-meet", topic:"مراجعة أداء الأسبوع والمهام القادمة", notes:"", attendees:[], absent:[]}
+    ],
+    auditLog: [
+      {action:"إصدار تحذير", details:"تحذير أول لـ علي المشرف", by:"Nashmi Owner", date: dtstr(now-5*day)},
+      {action:"إضافة نقاط", details:"+20 نقطة ليوسف مساعد", by:"سارة المدير", date: dtstr(now-2*day)}
+    ]
+  };
+}
+
+function dstr(ms){ return new Date(ms).toISOString().slice(0,10); }
+function tstr(ms){ return new Date(ms).toTimeString().slice(0,5); }
+function dtstr(ms){ return new Date(ms).toLocaleString('ar-EG'); }
+function uid(p){ return p+Math.random().toString(36).slice(2,9); }
+
+/* ---------------- init ---------------- */
+async function init(){
+  DB = await loadDB();
+  if(!DB){ DB = seedDB(); await saveDB(); }
+  buildDemoRoleGrid();
+}
+init();
+
+function buildDemoRoleGrid(){
+  const grid = document.getElementById('demoRoleGrid');
+  grid.innerHTML = '';
+  const samples = [
+    {id:"u1", label:"Owner"}, {id:"u2", label:"Administrator"},
+    {id:"u4", label:"Moderator"}, {id:"u5", label:"Trial Helper"}
+  ];
+  samples.forEach(s=>{
+    const chip = document.createElement('button');
+    chip.className='role-chip';
+    chip.textContent = s.label;
+    chip.onclick = ()=> quickLogin(s.id);
+    grid.appendChild(chip);
+  });
+}
+
+function quickLogin(id){
+  CURRENT_USER_ID = id;
+  enterApp();
+}
+
+function handleLogin(){
+  const u = document.getElementById('loginUser').value.trim();
+  if(!u){ toast('يرجى إدخال اسم المستخدم أو البريد الإلكتروني.','error'); return; }
+  // demo: match against staff by name/email fragment, else default to first staff
+  const match = DB.staff.find(s => s.email.toLowerCase().includes(u.toLowerCase()) || s.name.includes(u));
+  CURRENT_USER_ID = match ? match.id : DB.staff[DB.staff.length-1].id;
+  enterApp();
+}
+
+function handleLogout(){
+  clearInterval(timerInterval);
+  CURRENT_USER_ID = null;
+  document.getElementById('app').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+}
+
+function currentStaff(){ return DB.staff.find(s=>s.id===CURRENT_USER_ID); }
+function isAdmin(staff){ return ADMIN_RANKS.includes(staff.rank); }
+
+function enterApp(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('app').style.display='block';
+  setupNav();
+  renderAll();
+  switchPage('dashboard');
+  startLiveTimer();
+}
+
+/* ---------------- nav ---------------- */
+function setupNav(){
+  const staff = currentStaff();
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    item.onclick = ()=> switchPage(item.dataset.page);
+  });
+  const admin = isAdmin(staff);
+  document.querySelectorAll('[data-admin]').forEach(el=> el.classList.toggle('hidden', !admin));
+  document.getElementById('adminGroupLabel').classList.toggle('hidden', !admin);
+
+  document.getElementById('topAvatar').textContent = staff.name.charAt(0);
+  document.getElementById('topName').textContent = staff.name;
+  document.getElementById('topRank').textContent = staff.rank;
+
+  document.getElementById('adminPointsBox').classList.toggle('hidden', !admin);
+  document.getElementById('adminPromoBox').classList.toggle('hidden', !admin);
+  document.getElementById('adminWarnBox').classList.toggle('hidden', !admin);
+  document.getElementById('adminTaskBox').classList.toggle('hidden', !admin);
+  document.getElementById('adminAnnounceBox').classList.toggle('hidden', !admin);
+  document.getElementById('adminMeetingBox').classList.toggle('hidden', !admin);
+  document.getElementById('profAdminNotesBox').classList.toggle('hidden', !admin);
+}
+
+const PAGE_TITLES = {
+  dashboard:["الرئيسية","نظرة عامة على أداءك في الطاقم"],
+  attendance:["الحضور والانصراف","سجّل دوامك وتابع ساعات عملك"],
+  points:["النقاط والترقيات","تابع نقاطك ومسارك نحو الرتبة التالية"],
+  leave:["الإجازات","إدارة طلبات الإجازة"],
+  warnings:["التحذيرات","سجل التحذيرات والاعتراضات"],
+  tasks:["المهام","إدارة ومتابعة المهام الموكلة"],
+  reports:["البلاغات","سجل البلاغات التي تمت معالجتها"],
+  announcements:["الإعلانات والاجتماعات","آخر إعلانات الإدارة والاجتماعات القادمة"],
+  leaderboard:["الترتيب","أفضل أعضاء الطاقم أداءً"],
+  profile:["ملفي الشخصي","بياناتك وسجلك في الطاقم"],
+  "admin-staff":["إدارة الموظفين","إضافة وتعديل حسابات الطاقم"],
+  "admin-roles":["الرتب والصلاحيات","تعديل نظام الرتب في السيرفر"],
+  "admin-stats":["التقارير والإحصائيات","نظرة شاملة على أداء الطاقم"],
+  "admin-audit":["سجل الإدارة","جميع الإجراءات الحساسة الموثقة"]
+};
+
+function switchPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const target = document.getElementById('page-'+name);
+  if(target) target.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.page===name));
+  const t = PAGE_TITLES[name];
+  if(t){ document.getElementById('pageTitle').textContent=t[0]; document.getElementById('pageSub').textContent=t[1]; }
+  renderAll();
+}
+
+/* ---------------- toast ---------------- */
+function toast(msg, type){
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'toast'+(type==='error'?' error':type==='success'?' success':'');
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),300); }, 3200);
+}
+
+/* ---------------- render orchestrator ---------------- */
+function renderAll(){
+  if(!CURRENT_USER_ID) return;
+  renderDashboard();
+  renderAttendance();
+  renderPoints();
+  renderLeave();
+  renderWarnings();
+  renderTasks();
+  renderReports();
+  renderAnnouncements();
+  renderLeaderboard();
+  renderProfile();
+  renderAdminStaff();
+  renderAdminRoles();
+  renderAdminStats();
+  renderAuditLog();
+  populateStaffSelects();
+}
+
+function populateStaffSelects(){
+  const opts = DB.staff.map(s=>`<option value="${s.id}">${s.name} — ${s.rank}</option>`).join('');
+  ['ptsStaffSelect','warnStaffSelect','taskStaffSelect'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = opts;
+  });
+}
+
+/* ---------------- helpers: points/rank ---------------- */
+function nextRank(rank){
+  const idx = RANKS.indexOf(rank);
+  if(idx<=0) return null;
+  return RANKS[idx-1];
+}
+function reqFor(fromRank, toRank){
+  return DB.promoRequirements[fromRank+"->"+toRank];
+}
+function pointsSummary(staffId){
+  let added=0, deducted=0;
+  DB.points.filter(p=>p.staffId===staffId).forEach(p=>{
+    if(p.type==='add') added+=Number(p.amount); else deducted+=Number(p.amount);
+  });
+  return {added, deducted};
+}
+
+/* ---------------- DASHBOARD ---------------- */
+function renderDashboard(){
+  const s = currentStaff();
+  document.getElementById('dashPoints').textContent = s.points;
+  const hours = attendanceHours(s.id);
+  document.getElementById('dashHoursWeek').textContent = hours.week+'h';
+  document.getElementById('dashHoursMonth').textContent = hours.month+'h هذا الشهر';
+  const activeWarns = DB.warnings.filter(w=>w.staffId===s.id && w.status==='نشط').length;
+  document.getElementById('dashWarnings').textContent = activeWarns;
+  const doneTasks = DB.tasks.filter(t=>t.staffId===s.id && t.status==='مكتملة').length;
+  document.getElementById('dashTasks').textContent = doneTasks;
+
+  const sorted = [...DB.staff].sort((a,b)=>b.points-a.points);
+  const pos = sorted.findIndex(x=>x.id===s.id)+1;
+  document.getElementById('dashRankPos').textContent = 'الترتيب: #'+pos+' من '+sorted.length;
+
+  const nr = nextRank(s.rank);
+  document.getElementById('dashCurRank').textContent = s.rank;
+  if(nr){
+    const need = reqFor(s.rank, nr) || 9999;
+    document.getElementById('dashNextRank').textContent = nr;
+    const pct = Math.min(100, Math.round((s.points/need)*100));
+    document.getElementById('dashProgressFill').style.width = pct+'%';
+    document.getElementById('dashProgMin').textContent = s.points+' نقطة';
+    document.getElementById('dashProgMax').textContent = need+' نقطة مطلوبة';
+    const remaining = Math.max(0, need-s.points);
+    document.getElementById('dashPointsToGo').textContent = remaining>0? (remaining+' نقطة متبقية') : 'جاهز للترقية 🎉';
+  }else{
+    document.getElementById('dashNextRank').textContent = 'أعلى رتبة';
+    document.getElementById('dashProgressFill').style.width='100%';
+    document.getElementById('dashProgMin').textContent='';
+    document.getElementById('dashProgMax').textContent='';
+    document.getElementById('dashPointsToGo').textContent='—';
+  }
+
+  // announcement banner (important + unread)
+  const box = document.getElementById('dashAnnounce');
+  const imp = DB.announcements.find(a => a.priority!=='عادية' && a.requireRead && !a.reads.includes(s.id));
+  box.innerHTML='';
+  if(imp){
+    box.innerHTML = `<div class="announce-banner">
+      <h4>📢 ${escapeHtml(imp.title)} <span class="pill ${imp.priority==='عاجلة'?'red':'gold'}" style="margin-inline-start:8px">${imp.priority}</span></h4>
+      <p>${escapeHtml(imp.content)}</p>
+      <button class="btn success sm" onclick="markRead('${imp.id}')">تمت القراءة</button>
+    </div>`;
+  }
+
+  // activity feed
+  const acts = [];
+  DB.points.filter(p=>p.staffId===s.id).slice(-4).forEach(p=> acts.push(`${p.type==='add'?'➕':'➖'} ${p.amount} نقطة — ${p.reason} (${p.date})`));
+  DB.tasks.filter(t=>t.staffId===s.id).slice(-3).forEach(t=> acts.push(`📋 مهمة "${t.title}" — الحالة: ${t.status}`));
+  const actBox = document.getElementById('dashActivity');
+  actBox.innerHTML = acts.length? acts.map(a=>`<div class="small-muted mt10">${escapeHtml(a)}</div>`).join('') : '<div class="empty-state small-muted">لا يوجد نشاط حديث</div>';
+
+  const statusBox = document.getElementById('dashStatusBox');
+  statusBox.innerHTML = `
+    <div class="flex-between"><span class="small-muted">الحالة</span>${statusPill(s.status)}</div>
+    <div class="flex-between"><span class="small-muted">القسم</span><span>${escapeHtml(s.dept)}</span></div>
+    <div class="flex-between"><span class="small-muted">تحذيرات نشطة</span><span class="pill ${activeWarns>0?'red':'green'}">${activeWarns}</span></div>
+  `;
+}
+
+function statusPill(status){
+  const map = {online:['متصل','green'], offline:['غير متصل','gray'], on_leave:['في إجازة','orange'], suspended:['موقوف مؤقتًا','red']};
+  const [label,cls] = map[status] || ['غير معروف','gray'];
+  return `<span class="pill ${cls}">${label}</span>`;
+}
+
+function markRead(id){
+  const ann = DB.announcements.find(a=>a.id===id);
+  if(ann && !ann.reads.includes(CURRENT_USER_ID)) ann.reads.push(CURRENT_USER_ID);
+  saveDB(); renderAll();
+}
+
+/* ---------------- ATTENDANCE ---------------- */
+function attendanceHours(staffId){
+  const now = Date.now();
+  const weekAgo = now - 7*86400000;
+  const monthAgo = now - 30*86400000;
+  let week=0, month=0;
+  DB.attendance.filter(a=>a.staffId===staffId).forEach(a=>{
+    const t = new Date(a.date).getTime();
+    if(t>=monthAgo) month += a.durationMin/60;
+    if(t>=weekAgo) week += a.durationMin/60;
+  });
+  return {week: Math.round(week*10)/10, month: Math.round(month*10)/10};
+}
+
+function renderAttendance(){
+  const s = currentStaff();
+  const open = DB.openSessions[s.id];
+  const btn = document.getElementById('checkBtn');
+  const label = document.getElementById('timerStatusLabel');
+  if(open){
+    btn.textContent = 'تسجيل الخروج من الدوام';
+    btn.classList.add('danger');
+    label.textContent = 'أنت مسجل دخول الآن — القسم: '+open.dept;
+  }else{
+    btn.textContent = 'تسجيل الدخول إلى الدوام';
+    btn.classList.remove('danger');
+    label.textContent = 'غير مسجل دخول للدوام';
+  }
+
+  const rows = [...DB.attendance].sort((a,b)=> new Date(b.date)-new Date(a.date)).map(a=>{
+    const st = DB.staff.find(x=>x.id===a.staffId);
+    return `<tr><td>${escapeHtml(st?st.name:'—')}</td><td>${a.date}</td><td>${a.start}</td><td>${a.end||'—'}</td><td>${fmtMin(a.durationMin)}</td><td>${escapeHtml(a.dept)}</td><td>${statusChip(a.status)}</td></tr>`;
+  }).join('');
+  document.getElementById('attendanceTable').innerHTML = rows || `<tr><td colspan="7" class="empty-state">لا توجد سجلات حضور بعد</td></tr>`;
+}
+
+function statusChip(status){
+  const map = {"مكتملة":"green","مفتوحة":"sky","تم تعديلها بواسطة الإدارة":"orange"};
+  return `<span class="pill ${map[status]||'gray'}">${status}</span>`;
+}
+function fmtMin(min){ const h=Math.floor(min/60), m=min%60; return h+'h '+m+'m'; }
+
+function toggleCheck(){
+  const s = currentStaff();
+  const open = DB.openSessions[s.id];
+  const dept = document.getElementById('deptSelect').value;
+  if(open){
+    const startMs = open.startMs;
+    const durationMin = Math.round((Date.now()-startMs)/60000);
+    DB.attendance.push({id:uid('a'), staffId:s.id, date: dstr(startMs), start: tstr(startMs), end: tstr(Date.now()), durationMin, dept: open.dept, note:"", status:"مكتملة"});
+    delete DB.openSessions[s.id];
+    toast('تم تسجيل الخروج من الدوام.','success');
+  }else{
+    DB.openSessions[s.id] = {startMs: Date.now(), dept};
+    toast('تم تسجيل الدخول إلى الدوام.','success');
+  }
+  saveDB(); renderAll();
+}
+
+function startLiveTimer(){
+  clearInterval(timerInterval);
+  timerInterval = setInterval(()=>{
+    if(!CURRENT_USER_ID) return;
+    const open = DB.openSessions[CURRENT_USER_ID];
+    const el = document.getElementById('liveTimer');
+    if(!el) return;
+    if(open){
+      const diff = Date.now()-open.startMs;
+      const h = Math.floor(diff/3600000).toString().padStart(2,'0');
+      const m = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
+      const sec = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+      el.textContent = `${h}:${m}:${sec}`;
+    }else{
+      el.textContent = '00:00:00';
+    }
+  },1000);
+}
+
+function submitFixRequest(){
+  const date = document.getElementById('fixDate').value;
+  const time = document.getElementById('fixTime').value;
+  const note = document.getElementById('fixNote').value;
+  if(!date || !time){ toast('يرجى تحديد التاريخ والوقت.','error'); return; }
+  DB.fixRequests.push({id:uid('fx'), staffId: CURRENT_USER_ID, date, time, note, status:'قيد المراجعة'});
+  saveDB();
+  toast('تم إرسال طلب تعديل الجلسة إلى الإدارة.','success');
+  document.getElementById('fixNote').value='';
+}
+
+/* ---------------- POINTS ---------------- */
+function renderPoints(){
+  const s = currentStaff();
+  const sum = pointsSummary(s.id);
+  document.getElementById('ptsCurrent').textContent = s.points;
+  document.getElementById('ptsAdded').textContent = sum.added;
+  document.getElementById('ptsDeducted').textContent = sum.deducted;
+
+  // promo requirement editor (admin)
+  const editor = document.getElementById('promoReqEditor');
+  if(editor){
+    editor.innerHTML = Object.entries(DB.promoRequirements).map(([k,v])=>{
+      const [from,to] = k.split('->');
+      return `<div class="flex-between"><span class="small-muted">${from} ← ${to}</span>
+        <input class="field" style="width:110px;margin:0" type="number" value="${v}" onchange="updatePromoReq('${k}', this.value)"/></div>`;
+    }).join('');
+  }
+
+  // ready for promotion
+  const ready = DB.staff.filter(st=>{
+    const nr = nextRank(st.rank);
+    if(!nr) return false;
+    const need = reqFor(st.rank, nr);
+    return need!==undefined && st.points>=need;
+  });
+  document.getElementById('readyPromoTable').innerHTML = ready.length? ready.map(st=>{
+    const nr = nextRank(st.rank);
+    const admin = isAdmin(currentStaff());
+    return `<tr><td>${escapeHtml(st.name)}</td><td>${st.rank}</td><td><span class="pill gold">${nr}</span></td><td>${st.points}</td>
+      <td>${admin?`<button class="btn success sm" onclick="approvePromotion('${st.id}')">اعتماد الترقية</button>`:'—'}</td></tr>`;
+  }).join('') : `<tr><td colspan="5" class="empty-state">لا يوجد موظفون جاهزون للترقية حاليًا</td></tr>`;
+
+  const log = [...DB.points].sort((a,b)=> new Date(b.date)-new Date(a.date));
+  document.getElementById('pointsLogTable').innerHTML = log.length? log.map(p=>{
+    const st = DB.staff.find(x=>x.id===p.staffId);
+    return `<tr><td>${escapeHtml(st?st.name:'—')}</td><td><span class="pill ${p.type==='add'?'green':'red'}">${p.type==='add'?'إضافة':'خصم'}</span></td><td>${p.amount}</td><td>${escapeHtml(p.reason)}</td><td>${escapeHtml(p.by)}</td><td>${p.date}</td></tr>`;
+  }).join('') : `<tr><td colspan="6" class="empty-state">لا يوجد سجل نقاط</td></tr>`;
+}
+
+function updatePromoReq(key, val){
+  DB.promoRequirements[key] = Number(val);
+  saveDB();
+  toast('تم تحديث متطلبات الترقية.','success');
+}
+
+function submitPointsTx(){
+  const staffId = document.getElementById('ptsStaffSelect').value;
+  const type = document.getElementById('ptsType').value;
+  const amount = Number(document.getElementById('ptsAmount').value);
+  const reason = document.getElementById('ptsReason').value.trim();
+  if(!amount || !reason){ toast('يرجى إدخال عدد النقاط والسبب.','error'); return; }
+  const st = DB.staff.find(x=>x.id===staffId);
+  st.points = type==='add'? st.points+amount : Math.max(0, st.points-amount);
+  DB.points.push({id:uid('p'), staffId, type, amount, reason, by: currentStaff().name, date: dstr(Date.now())});
+  logAudit(type==='add'?'إضافة نقاط':'خصم نقاط', `${amount} نقطة لـ ${st.name} — ${reason}`);
+  saveDB(); renderAll();
+  toast('تم تنفيذ عملية النقاط بنجاح.','success');
+  document.getElementById('ptsAmount').value=''; document.getElementById('ptsReason').value=''; document.getElementById('ptsNotes').value='';
+}
+
+function approvePromotion(staffId){
+  const st = DB.staff.find(x=>x.id===staffId);
+  const nr = nextRank(st.rank);
+  const oldRank = st.rank;
+  st.rank = nr;
+  logAudit('اعتماد ترقية', `${st.name}: ${oldRank} ← ${nr}`);
+  saveDB(); renderAll();
+  toast(st.name+' تمت ترقيته إلى '+nr+' 🎉','success');
+}
+
+/* ---------------- LEAVE ---------------- */
+function renderLeave(){
+  const admin = isAdmin(currentStaff());
+  document.getElementById('leaveActionsHead').textContent = admin? 'إجراء':'—';
+  const list = [...DB.leave].sort((a,b)=> new Date(b.start)-new Date(a.start));
+  document.getElementById('leaveTable').innerHTML = list.length? list.map(l=>{
+    const st = DB.staff.find(x=>x.id===l.staffId);
+    let action = '—';
+    if(admin && l.status==='قيد المراجعة'){
+      action = `<div style="display:flex;gap:6px">
+        <button class="btn success sm" onclick="decideLeave('${l.id}','مقبول')">قبول</button>
+        <button class="btn danger sm" onclick="decideLeave('${l.id}','مرفوض')">رفض</button>
+      </div>`;
+    } else if(!admin && l.staffId===CURRENT_USER_ID && l.status==='قيد المراجعة'){
+      action = `<button class="btn sm" onclick="cancelLeave('${l.id}')">إلغاء</button>`;
+    }
+    return `<tr><td>${escapeHtml(st?st.name:'—')}</td><td>${escapeHtml(l.type)}</td><td>${l.start}</td><td>${l.end}</td><td>${l.days}</td><td>${leavePill(l.status)}</td><td>${action}</td></tr>`;
+  }).join('') : `<tr><td colspan="7" class="empty-state">لا توجد طلبات إجازة</td></tr>`;
+
+  const cal = DB.leave.filter(l=>l.status==='مقبول');
+  document.getElementById('leaveCalendarList').innerHTML = cal.length? cal.map(l=>{
+    const st = DB.staff.find(x=>x.id===l.staffId);
+    return `<div class="flex-between mt10"><span>${escapeHtml(st?st.name:'—')}</span><span class="small-muted">${l.start} → ${l.end}</span></div>`;
+  }).join('') : '<div class="empty-state small-muted">لا يوجد موظفون في إجازة حاليًا</div>';
+}
+
+function leavePill(status){
+  const map = {"قيد المراجعة":"orange","مقبول":"green","مرفوض":"red","ملغي":"gray"};
+  return `<span class="pill ${map[status]}">${status}</span>`;
+}
+
+function submitLeave(){
+  const type = document.getElementById('leaveType').value;
+  const start = document.getElementById('leaveStart').value;
+  const end = document.getElementById('leaveEnd').value;
+  const reason = document.getElementById('leaveReason').value.trim();
+  if(!start || !end || !reason){ toast('يرجى تعبئة جميع الحقول.','error'); return; }
+  const days = Math.max(1, Math.round((new Date(end)-new Date(start))/86400000)+1);
+  DB.leave.push({id:uid('l'), staffId: CURRENT_USER_ID, type, start, end, days, reason, status:'قيد المراجعة', adminNote:'', file:false});
+  saveDB(); renderAll();
+  toast('تم إرسال طلب الإجازة.','success');
+  document.getElementById('leaveReason').value='';
+}
+
+function decideLeave(id, decision){
+  const l = DB.leave.find(x=>x.id===id);
+  l.status = decision;
+  const st = DB.staff.find(x=>x.id===l.staffId);
+  if(decision==='مقبول') st.status = 'on_leave';
+  logAudit('قرار إجازة', `${decision} لطلب ${st.name}`);
+  saveDB(); renderAll();
+  toast('تم تحديث حالة الطلب.','success');
+}
+function cancelLeave(id){
+  const l = DB.leave.find(x=>x.id===id);
+  l.status='ملغي';
+  saveDB(); renderAll();
+}
+
+/* ---------------- WARNINGS ---------------- */
+function renderWarnings(){
+  const admin = isAdmin(currentStaff());
+  const list = [...DB.warnings].sort((a,b)=> new Date(b.issued)-new Date(a.issued));
+  document.getElementById('warningsTable').innerHTML = list.length? list.map(w=>{
+    const st = DB.staff.find(x=>x.id===w.staffId);
+    const canSee = admin || w.staffId===CURRENT_USER_ID;
+    if(!canSee) return '';
+    let action = '—';
+    if(!admin && w.staffId===CURRENT_USER_ID && w.status==='نشط' && !DB.appeals.find(a=>a.warningId===w.id)){
+      action = `<button class="btn sm" onclick="openAppealModal('${w.id}')">تقديم اعتراض</button>`;
+    } else if(admin && w.status==='نشط'){
+      action = `<button class="btn sm" onclick="cancelWarning('${w.id}')">إلغاء التحذير</button>`;
+    }
+    return `<tr><td>${escapeHtml(st?st.name:'—')}</td><td><span class="pill red">${w.level}</span></td><td>${escapeHtml(w.type)}</td><td>-${w.deduct}</td><td>${escapeHtml(w.by)}</td><td>${warnPill(w.status)}</td><td>${action}</td></tr>`;
+  }).join('') : `<tr><td colspan="7" class="empty-state">لا توجد تحذيرات</td></tr>`;
+
+  document.getElementById('appealActionsHead').textContent = admin? 'إجراء':'—';
+  document.getElementById('appealsTable').innerHTML = DB.appeals.length? DB.appeals.map(ap=>{
+    const w = DB.warnings.find(x=>x.id===ap.warningId);
+    const st = DB.staff.find(x=>x.id===ap.staffId);
+    let action='—';
+    if(admin && ap.status==='قيد المراجعة'){
+      action = `<div style="display:flex;gap:6px">
+        <button class="btn success sm" onclick="decideAppeal('${ap.id}','مقبول')">قبول</button>
+        <button class="btn danger sm" onclick="decideAppeal('${ap.id}','مرفوض')">رفض</button>
+      </div>`;
+    }
+    return `<tr><td>${escapeHtml(st?st.name:'—')}</td><td>${w?w.type:'—'}</td><td>${escapeHtml(ap.text)}</td><td>${leavePill(ap.status)}</td><td>${action}</td></tr>`;
+  }).join('') : `<tr><td colspan="5" class="empty-state">لا توجد اعتراضات</td></tr>`;
+}
+function warnPill(status){
+  const map = {"نشط":"red","منتهي":"gray","تم إلغاؤه":"green"};
+  return `<span class="pill ${map[status]}">${status}</span>`;
+}
+
+function submitWarning(){
+  const staffId = document.getElementById('warnStaffSelect').value;
+  const level = document.getElementById('warnLevel').value;
+  const type = document.getElementById('warnType').value.trim();
+  const deduct = Number(document.getElementById('warnDeduct').value)||0;
+  const reason = document.getElementById('warnReason').value.trim();
+  if(!type || !reason){ toast('يرجى تعبئة نوع المخالفة والسبب.','error'); return; }
+  const st = DB.staff.find(x=>x.id===staffId);
+  st.points = Math.max(0, st.points-deduct);
+  DB.warnings.push({id:uid('w'), staffId, level, type, reason, deduct, by: currentStaff().name, issued: dstr(Date.now()), status:'نشط'});
+  logAudit('إصدار تحذير', `${level} لـ ${st.name} — ${type}`);
+  saveDB(); renderAll();
+  toast('تم إصدار التحذير.','success');
+  document.getElementById('warnType').value=''; document.getElementById('warnReason').value=''; document.getElementById('warnDeduct').value='';
+}
+function cancelWarning(id){
+  const w = DB.warnings.find(x=>x.id===id);
+  w.status='تم إلغاؤه';
+  logAudit('إلغاء تحذير', `تحذير ${w.type} للموظف`);
+  saveDB(); renderAll();
+}
+let appealTargetWarning = null;
+function openAppealModal(warningId){
+  appealTargetWarning = warningId;
+  showModal('تقديم اعتراض على التحذير', `
+    <label class="field-label">نص الاعتراض</label>
+    <textarea class="field textarea" id="appealText" placeholder="اشرح وجهة نظرك..."></textarea>
+  `, ()=>{
+    const text = document.getElementById('appealText').value.trim();
+    if(!text){ toast('يرجى كتابة نص الاعتراض.','error'); return false; }
+    DB.appeals.push({id:uid('ap'), warningId: appealTargetWarning, staffId: CURRENT_USER_ID, text, status:'قيد المراجعة'});
+    saveDB(); renderAll();
+    toast('تم إرسال الاعتراض للإدارة.','success');
+    return true;
+  });
+}
+function decideAppeal(id, decision){
+  const ap = DB.appeals.find(x=>x.id===id);
+  ap.status = decision;
+  if(decision==='مقبول'){
+    const w = DB.warnings.find(x=>x.id===ap.warningId);
+    if(w) w.status='تم إلغاؤه';
+  }
+  logAudit('قرار اعتراض', decision);
+  saveDB(); renderAll();
+}
+
+/* ---------------- TASKS ---------------- */
+function renderTasks(){
+  const admin = isAdmin(currentStaff());
+  const list = [...DB.tasks].sort((a,b)=> new Date(a.deadline)-new Date(b.deadline));
+  document.getElementById('tasksTable').innerHTML = list.length? list.map(t=>{
+    const st = DB.staff.find(x=>x.id===t.staffId);
+    let action='—';
+    if(!admin && t.staffId===CURRENT_USER_ID && (t.status==='جديدة'||t.status==='قيد التنفيذ'||t.status==='متأخرة')){
+      action = `<button class="btn sm" onclick="submitTaskForReview('${t.id}')">إرسال للمراجعة</button>`;
+    } else if(admin && t.status==='بانتظار المراجعة'){
+      action = `<div style="display:flex;gap:6px">
+        <button class="btn success sm" onclick="decideTask('${t.id}','مكتملة')">قبول</button>
+        <button class="btn danger sm" onclick="decideTask('${t.id}','قيد التنفيذ')">إعادة للتعديل</button>
+      </div>`;
+    }
+    return `<tr><td>${escapeHtml(t.title)}</td><td>${escapeHtml(st?st.name:'—')}</td><td>${priorityPill(t.priority)}</td><td>${t.deadline}</td><td>${t.points}</td><td>${taskPill(t.status)}</td><td>${action}</td></tr>`;
+  }).join('') : `<tr><td colspan="7" class="empty-state">لا توجد مهام</td></tr>`;
+}
+function priorityPill(p){
+  const map = {"منخفضة":"gray","متوسطة":"sky","عالية":"orange","عاجلة":"red"};
+  return `<span class="pill ${map[p]}">${p}</span>`;
+}
+function taskPill(s){
+  const map = {"جديدة":"sky","قيد التنفيذ":"orange","بانتظار المراجعة":"gold","مكتملة":"green","متأخرة":"red","ملغية":"gray"};
+  return `<span class="pill ${map[s]||'gray'}">${s}</span>`;
+}
+function submitTask(){
+  const title = document.getElementById('taskTitle').value.trim();
+  const staffId = document.getElementById('taskStaffSelect').value;
+  const priority = document.getElementById('taskPriority').value;
+  const deadline = document.getElementById('taskDeadline').value;
+  const points = Number(document.getElementById('taskPoints').value)||0;
+  const desc = document.getElementById('taskDesc').value.trim();
+  if(!title || !deadline){ toast('يرجى إدخال العنوان والموعد النهائي.','error'); return; }
+  DB.tasks.push({id:uid('t'), title, staffId, priority, created: dstr(Date.now()), deadline, points, status:'جديدة', desc});
+  saveDB(); renderAll();
+  toast('تم إنشاء المهمة.','success');
+  document.getElementById('taskTitle').value=''; document.getElementById('taskDesc').value='';
+}
+function submitTaskForReview(id){
+  const t = DB.tasks.find(x=>x.id===id);
+  t.status='بانتظار المراجعة';
+  saveDB(); renderAll();
+  toast('تم إرسال المهمة للمراجعة.','success');
+}
+function decideTask(id, status){
+  const t = DB.tasks.find(x=>x.id===id);
+  t.status = status;
+  if(status==='مكتملة'){
+    const st = DB.staff.find(x=>x.id===t.staffId);
+    st.points += t.points;
+    DB.points.push({id:uid('p'), staffId:t.staffId, type:'add', amount:t.points, reason:'إنجاز مهمة: '+t.title, by: currentStaff().name, date: dstr(Date.now())});
+    logAudit('إنجاز مهمة', `${st.name} أنجز "${t.title}" (+${t.points} نقطة)`);
+  }
+  saveDB(); renderAll();
+}
+
+/* ---------------- REPORTS ---------------- */
+function renderReports(){
+  const list = [...DB.reports].sort((a,b)=> new Date(b.date)-new Date(a.date));
+  document.getElementById('reportsTable').innerHTML = list.length? list.map(r=>{
+    const st = DB.staff.find(x=>x.id===r.staffId);
+    return `<tr><td>${escapeHtml(r.player)}</td><td>${escapeHtml(st?st.name:'—')}</td><td>${escapeHtml(r.type)}</td><td>${escapeHtml(r.server)}</td><td>${escapeHtml(r.action)}</td><td>${r.date}</td></tr>`;
+  }).join('') : `<tr><td colspan="6" class="empty-state">لا توجد بلاغات مسجلة</td></tr>`;
+
+  const counts = {};
+  DB.reports.forEach(r=> counts[r.staffId]=(counts[r.staffId]||0)+1);
+  const box = document.getElementById('reportStatsBox');
+  const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  box.innerHTML = entries.length? entries.map(([id,c])=>{
+    const st = DB.staff.find(x=>x.id===id);
+    return `<div class="flex-between mt10"><span>${escapeHtml(st?st.name:'—')}</span><span class="pill sky">${c} بلاغ</span></div>`;
+  }).join('') : '<div class="empty-state small-muted">لا توجد بيانات</div>';
+}
+function submitReport(){
+  const player = document.getElementById('repPlayer').value.trim();
+  const type = document.getElementById('repType').value.trim();
+  const server = document.getElementById('repServer').value;
+  const action = document.getElementById('repAction').value.trim();
+  const desc = document.getElementById('repDesc').value.trim();
+  if(!player || !type){ toast('يرجى إدخال اسم اللاعب ونوع البلاغ.','error'); return; }
+  DB.reports.push({id:uid('r'), player, staffId: CURRENT_USER_ID, type, server, desc, action, date: dstr(Date.now())});
+  saveDB(); renderAll();
+  toast('تم حفظ البلاغ.','success');
+  document.getElementById('repPlayer').value=''; document.getElementById('repType').value=''; document.getElementById('repAction').value=''; document.getElementById('repDesc').value='';
+}
+
+/* ---------------- ANNOUNCEMENTS & MEETINGS ---------------- */
+function renderAnnouncements(){
+  const s = currentStaff();
+  const list = [...DB.announcements].sort((a,b)=> new Date(b.date)-new Date(a.date));
+  document.getElementById('announcementsList').innerHTML = list.length? list.map(a=>{
+    const read = a.reads.includes(CURRENT_USER_ID);
+    const prColor = a.priority==='عاجلة'?'red':a.priority==='مهمة'?'gold':'sky';
+    return `<div class="card mt10">
+      <div class="flex-between"><h3 style="margin:0">${escapeHtml(a.title)}</h3><span class="pill ${prColor}">${a.priority}</span></div>
+      <p class="small-muted mt10" style="line-height:1.8">${escapeHtml(a.content)}</p>
+      <div class="flex-between mt10">
+        <span class="small-muted">${a.date}</span>
+        ${a.requireRead ? (read? `<span class="pill green">تمت القراءة ✓</span>` : `<button class="btn success sm" onclick="markRead('${a.id}')">تمت القراءة</button>`) : ''}
+      </div>
+    </div>`;
+  }).join('') : '<div class="card empty-state">لا توجد إعلانات بعد</div>';
+
+  document.getElementById('meetingsList').innerHTML = DB.meetings.length? DB.meetings.map(m=>`
+    <div class="mt10" style="border-bottom:1px solid var(--line-soft);padding-bottom:12px">
+      <div class="flex-between"><strong>${escapeHtml(m.name)}</strong><span class="small-muted">${new Date(m.time).toLocaleString('ar-EG')}</span></div>
+      <div class="small-muted mt6">الموضوع: ${escapeHtml(m.topic)} — <a href="#" onclick="return false" style="color:var(--sky)">${escapeHtml(m.link)}</a></div>
+    </div>
+  `).join('') : '<div class="empty-state small-muted">لا توجد اجتماعات مجدولة</div>';
+}
+function submitAnnouncement(){
+  const title = document.getElementById('annTitle').value.trim();
+  const content = document.getElementById('annContent').value.trim();
+  const priority = document.getElementById('annPriority').value;
+  const requireRead = document.getElementById('annRequireRead').value==='1';
+  if(!title || !content){ toast('يرجى تعبئة العنوان والمحتوى.','error'); return; }
+  DB.announcements.push({id:uid('an'), title, content, priority, date: dstr(Date.now()), requireRead, reads:[]});
+  logAudit('نشر إعلان', title);
+  saveDB(); renderAll();
+  toast('تم نشر الإعلان.','success');
+  document.getElementById('annTitle').value=''; document.getElementById('annContent').value='';
+}
+function submitMeeting(){
+  const name = document.getElementById('mtgName').value.trim();
+  const time = document.getElementById('mtgTime').value;
+  const link = document.getElementById('mtgLink').value.trim();
+  const topic = document.getElementById('mtgTopic').value.trim();
+  if(!name || !time){ toast('يرجى تعبئة اسم الاجتماع والوقت.','error'); return; }
+  DB.meetings.push({id:uid('m'), name, time, link, topic, notes:'', attendees:[], absent:[]});
+  saveDB(); renderAll();
+  toast('تم إنشاء الاجتماع.','success');
+  document.getElementById('mtgName').value=''; document.getElementById('mtgLink').value=''; document.getElementById('mtgTopic').value='';
+}
+
+/* ---------------- LEADERBOARD ---------------- */
+function setLeaderTab(tab){
+  leaderTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.lb===tab));
+  renderLeaderboard();
+}
+function renderLeaderboard(){
+  let data = [];
+  if(leaderTab==='points') data = DB.staff.map(s=>({s, val:s.points}));
+  if(leaderTab==='hours') data = DB.staff.map(s=>({s, val: totalHours(s.id)}));
+  if(leaderTab==='tasks') data = DB.staff.map(s=>({s, val: DB.tasks.filter(t=>t.staffId===s.id && t.status==='مكتملة').length}));
+  if(leaderTab==='reports') data = DB.staff.map(s=>({s, val: DB.reports.filter(r=>r.staffId===s.id).length}));
+  data.sort((a,b)=>b.val-a.val);
+  const unit = {points:'نقطة', hours:'ساعة', tasks:'مهمة', reports:'بلاغ'}[leaderTab];
+  document.getElementById('leaderboardList').innerHTML = data.map((d,i)=>`
+    <div class="leader-row">
+      <div class="leader-rank ${i===0?'top1':i===1?'top2':i===2?'top3':''}">${i+1}</div>
+      <div class="leader-name"><div class="n">${escapeHtml(d.s.name)}</div><div class="r">${d.s.rank}</div></div>
+      <div class="leader-val">${d.val} ${unit}</div>
+    </div>
+  `).join('');
+}
+function totalHours(staffId){
+  return Math.round(DB.attendance.filter(a=>a.staffId===staffId).reduce((sum,a)=>sum+a.durationMin,0)/60*10)/10;
+}
+
+/* ---------------- PROFILE ---------------- */
+function renderProfile(){
+  const s = currentStaff();
+  document.getElementById('profName').textContent = s.name;
+  document.getElementById('profRank').textContent = s.rank;
+  document.getElementById('profJoined').textContent = 'انضم في '+dstr(s.joined);
+  document.getElementById('profMc').textContent = s.mc;
+  document.getElementById('profDiscord').textContent = s.discord;
+  document.getElementById('profEmail').textContent = s.email;
+  document.getElementById('profDept').textContent = s.dept;
+  document.getElementById('profHours').textContent = totalHours(s.id)+' ساعة';
+  document.getElementById('profRating').textContent = s.rating;
+
+  const promos = DB.auditLog.filter(a=>a.action==='اعتماد ترقية' && a.details.includes(s.name));
+  document.getElementById('profPromoHistory').innerHTML = promos.length? promos.map(p=>`<div class="small-muted mt10">🏅 ${escapeHtml(p.details)} — ${p.date}</div>`).join('') : '<div class="empty-state small-muted">لا يوجد سجل ترقيات بعد</div>';
+
+  if(isAdmin(currentStaff())){
+    document.getElementById('profAdminNotes').innerHTML = `<p class="small-muted" style="line-height:1.8">${escapeHtml(s.notes||'لا توجد ملاحظات')}</p>`;
+  }
+}
+
+/* ---------------- ADMIN: STAFF ---------------- */
+function renderAdminStaff(){
+  document.getElementById('staffAdminTable').innerHTML = DB.staff.map(s=>`
+    <tr><td>${escapeHtml(s.name)}</td><td><span class="pill sky">${s.rank}</span></td><td>${escapeHtml(s.dept)}</td><td>${s.points}</td><td>${statusPill(s.status)}</td>
+    <td><div style="display:flex;gap:6px">
+      <button class="btn sm" onclick="openEditStaffModal('${s.id}')">تعديل</button>
+      <button class="btn danger sm" onclick="removeStaff('${s.id}')">حذف</button>
+    </div></td></tr>
+  `).join('');
+}
+function openAddStaffModal(){
+  showModal('إضافة موظف جديد', `
+    <label class="field-label">الاسم</label><input class="field" id="newStaffName" />
+    <label class="field-label">اسم Minecraft</label><input class="field" id="newStaffMc" />
+    <label class="field-label">البريد الإلكتروني</label><input class="field" id="newStaffEmail" />
+    <label class="field-label">الرتبة</label>
+    <select class="field" id="newStaffRank">${RANKS.map(r=>`<option>${r}</option>`).join('')}</select>
+    <label class="field-label">القسم</label><input class="field" id="newStaffDept" placeholder="Survival" />
+  `, ()=>{
+    const name = document.getElementById('newStaffName').value.trim();
+    const mc = document.getElementById('newStaffMc').value.trim();
+    const email = document.getElementById('newStaffEmail').value.trim();
+    const rank = document.getElementById('newStaffRank').value;
+    const dept = document.getElementById('newStaffDept').value.trim() || 'General';
+    if(!name || !email){ toast('يرجى إدخال الاسم والبريد الإلكتروني.','error'); return false; }
+    DB.staff.push({id:uid('u'), name, mc, discord:'', email, rank, dept, joined: Date.now(), points:0, status:'offline', rating:'قيد التقييم', notes:''});
+    logAudit('إضافة موظف', name);
+    saveDB(); renderAll();
+    toast('تمت إضافة الموظف.','success');
+    return true;
+  });
+}
+function openEditStaffModal(id){
+  const s = DB.staff.find(x=>x.id===id);
+  showModal('تعديل بيانات الموظف', `
+    <label class="field-label">الاسم</label><input class="field" id="editStaffName" value="${escapeAttr(s.name)}" />
+    <label class="field-label">الرتبة</label>
+    <select class="field" id="editStaffRank">${RANKS.map(r=>`<option ${r===s.rank?'selected':''}>${r}</option>`).join('')}</select>
+    <label class="field-label">القسم</label><input class="field" id="editStaffDept" value="${escapeAttr(s.dept)}" />
+    <label class="field-label">الحالة</label>
+    <select class="field" id="editStaffStatus">
+      <option value="online" ${s.status==='online'?'selected':''}>متصل</option>
+      <option value="offline" ${s.status==='offline'?'selected':''}>غير متصل</option>
+      <option value="on_leave" ${s.status==='on_leave'?'selected':''}>في إجازة</option>
+      <option value="suspended" ${s.status==='suspended'?'selected':''}>موقوف مؤقتًا</option>
+    </select>
+  `, ()=>{
+    const oldRank = s.rank;
+    s.name = document.getElementById('editStaffName').value.trim() || s.name;
+    s.rank = document.getElementById('editStaffRank').value;
+    s.dept = document.getElementById('editStaffDept').value.trim() || s.dept;
+    s.status = document.getElementById('editStaffStatus').value;
+    if(oldRank!==s.rank) logAudit('تعديل رتبة', `${s.name}: ${oldRank} ← ${s.rank}`);
+    saveDB(); renderAll();
+    toast('تم تحديث بيانات الموظف.','success');
+    return true;
+  });
+}
+function removeStaff(id){
+  const s = DB.staff.find(x=>x.id===id);
+  if(!confirm('هل أنت متأكد من حذف '+s.name+'؟')) return;
+  DB.staff = DB.staff.filter(x=>x.id!==id);
+  logAudit('حذف موظف', s.name);
+  saveDB(); renderAll();
+  toast('تم حذف الحساب.','success');
+}
+
+/* ---------------- ADMIN: ROLES ---------------- */
+function renderAdminRoles(){
+  document.getElementById('rolesList').innerHTML = DB.roles.sort((a,b)=>a.order-b.order).map((r,i)=>`
+    <div class="flex-between" style="background:var(--bg-1);border:1px solid var(--line);border-radius:10px;padding:10px 14px">
+      <span><span class="small-muted">#${i+1}</span> &nbsp; ${escapeHtml(r.name)}</span>
+      <span class="pill sky">${DB.staff.filter(s=>s.rank===r.name).length} موظف</span>
+    </div>
+  `).join('');
+}
+function addNewRole(){
+  const name = document.getElementById('newRoleName').value.trim();
+  if(!name){ toast('يرجى إدخال اسم الرتبة.','error'); return; }
+  DB.roles.push({name, order: DB.roles.length});
+  RANKS.push(name);
+  logAudit('إضافة رتبة', name);
+  saveDB(); renderAll();
+  toast('تمت إضافة الرتبة.','success');
+  document.getElementById('newRoleName').value='';
+}
+
+/* ---------------- ADMIN: STATS ---------------- */
+function renderAdminStats(){
+  document.getElementById('statTotalStaff').textContent = DB.staff.length;
+  document.getElementById('statActiveStaff').textContent = DB.staff.filter(s=>s.status==='online').length;
+  document.getElementById('statOnLeave').textContent = DB.staff.filter(s=>s.status==='on_leave').length;
+  document.getElementById('statActiveWarnings').textContent = DB.warnings.filter(w=>w.status==='نشط').length;
+
+  const maxH = Math.max(1, ...DB.staff.map(s=>totalHours(s.id)));
+  document.getElementById('statHoursChart').innerHTML = DB.staff.map(s=>{
+    const h = totalHours(s.id);
+    return `<div class="mt10"><div class="flex-between small-muted"><span>${escapeHtml(s.name)}</span><span>${h}h</span></div>
+      <div class="progress-track" style="height:8px"><div class="progress-fill" style="width:${(h/maxH*100)}%"></div></div></div>`;
+  }).join('');
+
+  const done = DB.tasks.filter(t=>t.status==='مكتملة').length;
+  const late = DB.tasks.filter(t=>t.status==='متأخرة').length;
+  const total = Math.max(1, done+late);
+  document.getElementById('statTasksChart').innerHTML = `
+    <div class="flex-between"><span class="small-muted">مكتملة</span><span class="pill green">${done}</span></div>
+    <div class="progress-track mt6" style="height:8px"><div class="progress-fill" style="width:${(done/total*100)}%;background:var(--green)"></div></div>
+    <div class="flex-between mt16"><span class="small-muted">متأخرة</span><span class="pill red">${late}</span></div>
+    <div class="progress-track mt6" style="height:8px"><div class="progress-fill" style="width:${(late/total*100)}%;background:var(--red)"></div></div>
+  `;
+
+  const ready = DB.staff.filter(st=>{
+    const nr = nextRank(st.rank);
+    if(!nr) return false;
+    const need = reqFor(st.rank, nr);
+    return need!==undefined && st.points>=need;
+  });
+  document.getElementById('statReadyPromo').innerHTML = ready.length? ready.map(s=>`<div class="flex-between mt10"><span>${escapeHtml(s.name)}</span><span class="pill gold">${s.rank} ← ${nextRank(s.rank)}</span></div>`).join('') : '<div class="empty-state small-muted">لا يوجد حاليًا</div>';
+}
+
+/* ---------------- ADMIN: AUDIT ---------------- */
+function logAudit(action, details){
+  DB.auditLog.unshift({action, details, by: currentStaff()?currentStaff().name:'النظام', date: dtstr(Date.now())});
+}
+function renderAuditLog(){
+  document.getElementById('auditTable').innerHTML = DB.auditLog.length? DB.auditLog.map(a=>`
+    <tr><td><span class="pill sky">${escapeHtml(a.action)}</span></td><td>${escapeHtml(a.details)}</td><td>${escapeHtml(a.by)}</td><td>${a.date}</td></tr>
+  `).join('') : `<tr><td colspan="4" class="empty-state">لا توجد إجراءات مسجلة بعد</td></tr>`;
+}
+
+/* ---------------- MODAL ---------------- */
+function showModal(title, bodyHtml, onConfirm){
+  const bg = document.createElement('div');
+  bg.className='modal-bg';
+  bg.innerHTML = `<div class="modal">
+    <h3>${escapeHtml(title)}</h3>
+    <div>${bodyHtml}</div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="modalCancel">إلغاء</button>
+      <button class="btn primary" id="modalConfirm">تأكيد</button>
+    </div>
+  </div>`;
+  document.body.appendChild(bg);
+  bg.querySelector('#modalCancel').onclick = ()=> bg.remove();
+  bg.querySelector('#modalConfirm').onclick = ()=>{
+    const ok = onConfirm();
+    if(ok!==false) bg.remove();
+  };
+}
+
+/* ---------------- utils ---------------- */
+function escapeHtml(str){
+  if(str===undefined||str===null) return '';
+  return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function escapeAttr(str){ return escapeHtml(str); }
+</script>
+</body>
+</html>
