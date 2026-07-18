@@ -1819,14 +1819,23 @@ function getDiscordToken() {
 
 const accessToken = getDiscordToken();
 
-if (accessToken) {
-    // إخفاء شاشة تسجيل الدخول فوراً
-    document.querySelector('.login-card')?.remove();
-    // جلب بيانات الحساب
-    fetch('https://discord.com/api/users/@me', {
-        headers: { 'Authorization': `Bearer ${accessToken}` }
-    .then(res => res.json())
-    .then(user => {
+window.addEventListener('DOMContentLoaded', () => {
+    const accessToken = getDiscordToken();
+
+    if (accessToken) {
+        console.log("تم العثور على التوكن بنجاح:", accessToken);
+
+        // إخفاء شاشة تسجيل الدخول فوراً
+        document.querySelector('.login-card')?.remove();
+        const loginScreen = document.getElementById('loginScreen');
+        if (loginScreen) loginScreen.style.display = 'none';
+
+        // جلب بيانات الحساب
+       fetch('https://discord.com/api/users/@me', {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+        })
+        .then(res => res.json())
+        .then(user => {
           const welcomeDiv = document.createElement('div');
           welcomeDiv.style.cssText = 'text-align: center; padding: 40px 20px; color: #fff; font-family: "Tajawal", sans-serif;';
 
