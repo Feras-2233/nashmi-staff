@@ -1824,7 +1824,7 @@ if (accessToken) {
     document.querySelector('.login-card')?.remove();
     // جلب بيانات الحساب
     fetch('https://discord.com/api/users/@me', {
-        headers: { 'Authorization': Bearer ${accessToken} }
+        headers: { 'Authorization': `Bearer ${accessToken}` }
     .then(res => res.json())
     .then(user => {
           const welcomeDiv = document.createElement('div');
