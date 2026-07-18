@@ -1808,31 +1808,28 @@ function escapeHtml(str){
   return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 function escapeAttr(str){ return escapeHtml(str); }
-</script> 
-<script>
-  // دالة لفحص الرابط المرتجع من الديسكورد سواء كان بعد الـ # أو بعد الـ ?
-  function getDiscordToken() {
-      const hashParams = new URLSearchParams(window.location.hash.slice(1));
-      if (hashParams.get('access_token')) return hashParams.get('access_token');
+// دالة لفحص الرابط المرتجع من الديسكورد سواء كان بعد الـ # أو بعد الـ ?
+function getDiscordToken() {
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    if (hashParams.get('access_token')) return hashParams.get('access_token');
 
-      const searchParams = new URLSearchParams(window.location.search);
-      return searchParams.get('access_token');
-  }
+    const searchParams = new URLSearchParams(window.location.search);
+    return searchParams.get('access_token');
+}
 
-  const accessToken = getDiscordToken();
+const accessToken = getDiscordToken();
 
-  if (accessToken) {
-      // إخفاء شاشة تسجيل الدخول فوراً
-      const loginScreen = document.getElementById('loginScreen');
-      if (loginScreen) loginScreen.style.display = 'none';
+if (accessToken) {
+    // إخفاء شاشة تسجيل الدخول فوراً
+    const loginScreen = document.getElementById('loginScreen');
+    if (loginScreen) loginScreen.style.display = 'none';
 
-      // جلب بيانات الحساب
-      fetch('https://discord.com/api/users/@me', {
-          headers: { 'Authorization': Bearer ${accessToken} }
-      })
-      .then(res => res.json())
-      .then(user => {
-          // إنشاء كرت الترحيب
+    // جلب بيانات الحساب
+    fetch('https://discord.com/api/users/@me', {
+        headers: { 'Authorization': Bearer ${accessToken} }
+    })
+    .then(res => res.json())
+    .then(user => {
           const welcomeDiv = document.createElement('div');
           welcomeDiv.style.cssText = 'text-align: center; padding: 40px 20px; color: #fff; font-family: "Tajawal", sans-serif;';
 
