@@ -1821,9 +1821,7 @@ const accessToken = getDiscordToken();
 
 if (accessToken) {
     // إخفاء شاشة تسجيل الدخول فوراً
-    const loginScreen = document.getElementById('loginScreen');
-    if (loginScreen) loginScreen.style.display = 'none';
-
+    document.querySelector('.login-card')?.remove();
     // جلب بيانات الحساب
     fetch('https://discord.com/api/users/@me', {
         headers: { 'Authorization': Bearer ${accessToken} }
