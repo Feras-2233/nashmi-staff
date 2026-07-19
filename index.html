@@ -863,18 +863,46 @@ let CURRENT_USER_ID = null;
 let timerInterval = null;
 let leaderTab = 'points';
 
-/* ---------------- storage helpers ---------------- */
+/* ---------------- storage helpers ----------------
+   window.storage only exists inside Claude.ai's own artifact preview — it
+   is NOT a real browser API, so on a normal deployed site (GitHub Pages,
+   your own domain, etc.) it doesn't exist at all, and every save silently
+   failed. That's why added employees disappeared: nothing was ever
+   actually being saved anywhere.
+   We now use it when available (so it still works fine if you preview
+   this inside Claude), and fall back to the browser's own localStorage
+   everywhere else — including on your live site. Note the tradeoff:
+   localStorage only persists on the SAME browser/device. It is not
+   shared between different staff members logging in from different
+   computers. For that you'd need a real backend (e.g. Firebase/Supabase)
+   — happy to help set one up if you want true cross-device shared data. */
+const LOCAL_DB_KEY = 'nashmimc_db_local';
+function hasArtifactStorage(){
+  return typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function';
+}
 async function loadDB(){
+  if(hasArtifactStorage()){
+    try{
+      const res = await window.storage.get('nashmimc_db', true);
+      if(res && res.value) return JSON.parse(res.value);
+      return null;
+    }catch(e){ /* not found yet */ return null; }
+  }
   try{
-    const res = await window.storage.get('nashmimc_db', true);
-    if(res && res.value) return JSON.parse(res.value);
-  }catch(e){ /* not found yet */ }
-  return null;
+    const raw = localStorage.getItem(LOCAL_DB_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){ console.error('localStorage read failed', e); return null; }
 }
 async function saveDB(){
+  if(hasArtifactStorage()){
+    try{
+      await window.storage.set('nashmimc_db', JSON.stringify(DB), true);
+      return;
+    }catch(e){ console.error('artifact storage save failed', e); }
+  }
   try{
-    await window.storage.set('nashmimc_db', JSON.stringify(DB), true);
-  }catch(e){ console.error('storage save failed', e); }
+    localStorage.setItem(LOCAL_DB_KEY, JSON.stringify(DB));
+  }catch(e){ console.error('localStorage save failed', e); }
 }
 
 function seedDB(){
@@ -952,7 +980,23 @@ function loginWithDiscord(){
     + '&redirect_uri=' + encodeURIComponent(DISCORD_REDIRECT_URI)
     + '&response_type=token'
     + '&scope=' + encodeURIComponent(DISCORD_SCOPE);
-  window.location.href = url;
+  // Discord's authorize page refuses to render inside an iframe (it sets
+  // X-Frame-Options to block clickjacking). If this page is itself being
+  // viewed inside an iframe/preview pane, navigating window.location would
+  // try to load Discord inside that same frame and get blocked. Redirect
+  // the TOP-level browsing context instead so it always opens as a real
+  // full page, and fall back to a new tab if that's not possible.
+  try{
+    if(window.top && window.top !== window){
+      window.top.location.href = url;
+    } else {
+      window.location.href = url;
+    }
+  }catch(e){
+    // Cross-origin frame access can throw in some sandboxed embeds — fall
+    // back to opening Discord in a fresh tab instead.
+    window.open(url, '_blank');
+  }
 }
 
 function parseDiscordHash(){
@@ -991,19 +1035,27 @@ async function handleDiscordCallback(){
   }
 }
 
+function normalizeHandle(str){
+  return (str || '').toString().trim().toLowerCase().replace(/^@/, '');
+}
+
 function loginFromDiscordUser(user){
   // New Discord usernames have no discriminator (discriminator "0"); legacy
-  // accounts still have one, e.g. "name#1234" — match either style.
-  const uname = (user.username || '').toLowerCase();
+  // accounts still have one, e.g. "name#1234" — match either style. Also
+  // fall back to the account's display name (global_name), since it's easy
+  // for an admin to type that into the staff field by mistake instead of
+  // the actual unique username.
+  const uname = normalizeHandle(user.username);
+  const displayName = normalizeHandle(user.global_name);
   const match = DB.staff.find(s=>{
     if(s.discordId && s.discordId === user.id) return true;
-    const tag = (s.discord || '').toLowerCase();
+    const tag = normalizeHandle(s.discord);
     if(!tag) return false;
     const tagName = tag.split('#')[0];
-    return tagName === uname;
+    return tagName === uname || (displayName && tagName === displayName);
   });
   if(!match){
-    toast('حساب Discord هذا غير مرتبط بأي موظف مسجّل في النظام.','error');
+    toast('حساب Discord هذا غير مرتبط بأي موظف مسجّل في النظام. تأكد أن اسم المستخدم في بيانات الموظف يطابق اسم المستخدم الفعلي في Discord (وليس الاسم المعروض).','error');
     return;
   }
   // Remember the Discord id on the matched staff record for faster/more
