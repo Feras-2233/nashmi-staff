@@ -345,11 +345,6 @@ tr:hover td{background:rgba(56,189,248,.04);}
     <button class="btn-discord" onclick="loginWithDiscord()">
       <span>🎮</span> تسجيل الدخول باستخدام Discord
     </button>
-
-    <div class="role-demo">
-      <p>وضع العرض التجريبي — تسجيل دخول سريع برتبة:</p>
-      <div class="role-grid" id="demoRoleGrid"></div>
-    </div>
   </div>
 </div>
 
@@ -839,9 +834,8 @@ tr:hover td{background:rgba(56,189,248,.04);}
 <script>
 /* ======================================================================
    NashmiMC Staff Hub — demo prototype
-   Data persists via window.storage (shared demo dataset for the whole team).
-   This is a functional front-end prototype with mock data, as requested,
-   ahead of connecting a real backend (Next.js/Supabase/Postgres).
+   Data persists via localStorage on this browser (falls back to Claude's
+   artifact storage automatically if previewed inside Claude.ai).
 ====================================================================== */
 
 const RANKS = ["Owner","Co-Owner","Network Manager","Staff Manager","Developer Manager","Administrator","Senior Moderator","Moderator","Helper","Trial Helper","Developer"];
@@ -867,15 +861,12 @@ let leaderTab = 'points';
    window.storage only exists inside Claude.ai's own artifact preview — it
    is NOT a real browser API, so on a normal deployed site (GitHub Pages,
    your own domain, etc.) it doesn't exist at all, and every save silently
-   failed. That's why added employees disappeared: nothing was ever
-   actually being saved anywhere.
-   We now use it when available (so it still works fine if you preview
-   this inside Claude), and fall back to the browser's own localStorage
-   everywhere else — including on your live site. Note the tradeoff:
-   localStorage only persists on the SAME browser/device. It is not
-   shared between different staff members logging in from different
-   computers. For that you'd need a real backend (e.g. Firebase/Supabase)
-   — happy to help set one up if you want true cross-device shared data. */
+   failed previously. We now use it when available, and fall back to the
+   browser's own localStorage everywhere else — including on your live
+   site. Note the tradeoff: localStorage only persists on the SAME
+   browser/device. It is not shared between different staff members
+   logging in from different computers. For that you'd need a real
+   backend (e.g. Firebase/Supabase). */
 const LOCAL_DB_KEY = 'nashmimc_db_local';
 function hasArtifactStorage(){
   return typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function';
@@ -886,7 +877,7 @@ async function loadDB(){
       const res = await window.storage.get('nashmimc_db', true);
       if(res && res.value) return JSON.parse(res.value);
       return null;
-    }catch(e){ /* not found yet */ return null; }
+    }catch(e){ return null; }
   }
   try{
     const raw = localStorage.getItem(LOCAL_DB_KEY);
@@ -993,19 +984,15 @@ function loginWithDiscord(){
       window.location.href = url;
     }
   }catch(e){
-    // Cross-origin frame access can throw in some sandboxed embeds — fall
-    // back to opening Discord in a fresh tab instead.
     window.open(url, '_blank');
   }
 }
 
 function parseDiscordHash(){
-  // Discord redirects back with #access_token=...&token_type=Bearer&expires_in=...&scope=...
   if(!window.location.hash || window.location.hash.indexOf('access_token') === -1) return null;
   const params = new URLSearchParams(window.location.hash.slice(1));
   const token = params.get('access_token');
   const error = params.get('error');
-  // Clean the token out of the URL bar right away so it isn't left visible/bookmarkable.
   history.replaceState(null, '', window.location.pathname + window.location.search);
   if(error) return { error };
   if(token) return { token };
@@ -1040,11 +1027,6 @@ function normalizeHandle(str){
 }
 
 function loginFromDiscordUser(user){
-  // New Discord usernames have no discriminator (discriminator "0"); legacy
-  // accounts still have one, e.g. "name#1234" — match either style. Also
-  // fall back to the account's display name (global_name), since it's easy
-  // for an admin to type that into the staff field by mistake instead of
-  // the actual unique username.
   const uname = normalizeHandle(user.username);
   const displayName = normalizeHandle(user.global_name);
   const match = DB.staff.find(s=>{
@@ -1058,8 +1040,6 @@ function loginFromDiscordUser(user){
     toast('حساب Discord هذا غير مرتبط بأي موظف مسجّل في النظام. تأكد أن اسم المستخدم في بيانات الموظف يطابق اسم المستخدم الفعلي في Discord (وليس الاسم المعروض).','error');
     return;
   }
-  // Remember the Discord id on the matched staff record for faster/more
-  // reliable matching next time (usernames can change, ids don't).
   if(match.discordId !== user.id){
     match.discordId = user.id;
     saveDB();
@@ -1073,36 +1053,13 @@ function loginFromDiscordUser(user){
 async function init(){
   DB = await loadDB();
   if(!DB){ DB = seedDB(); await saveDB(); }
-  buildDemoRoleGrid();
   await handleDiscordCallback();
 }
 init();
 
-function buildDemoRoleGrid(){
-  const grid = document.getElementById('demoRoleGrid');
-  grid.innerHTML = '';
-  const samples = [
-    {id:"u1", label:"Owner"}, {id:"u2", label:"Administrator"},
-    {id:"u4", label:"Moderator"}, {id:"u5", label:"Trial Helper"}
-  ];
-  samples.forEach(s=>{
-    const chip = document.createElement('button');
-    chip.className='role-chip';
-    chip.textContent = s.label;
-    chip.onclick = ()=> quickLogin(s.id);
-    grid.appendChild(chip);
-  });
-}
-
-function quickLogin(id){
-  CURRENT_USER_ID = id;
-  enterApp();
-}
-
 function handleLogin(){
   const u = document.getElementById('loginUser').value.trim();
   if(!u){ toast('يرجى إدخال اسم المستخدم أو البريد الإلكتروني.','error'); return; }
-  // demo: match against staff by name/email fragment, else default to first staff
   const match = DB.staff.find(s => s.email.toLowerCase().includes(u.toLowerCase()) || s.name.includes(u));
   CURRENT_USER_ID = match ? match.id : DB.staff[DB.staff.length-1].id;
   enterApp();
@@ -1267,7 +1224,6 @@ function renderDashboard(){
     document.getElementById('dashPointsToGo').textContent='—';
   }
 
-  // announcement banner (important + unread)
   const box = document.getElementById('dashAnnounce');
   const imp = DB.announcements.find(a => a.priority!=='عادية' && a.requireRead && !a.reads.includes(s.id));
   box.innerHTML='';
@@ -1279,7 +1235,6 @@ function renderDashboard(){
     </div>`;
   }
 
-  // activity feed
   const acts = [];
   DB.points.filter(p=>p.staffId===s.id).slice(-4).forEach(p=> acts.push(`${p.type==='add'?'➕':'➖'} ${p.amount} نقطة — ${p.reason} (${p.date})`));
   DB.tasks.filter(t=>t.staffId===s.id).slice(-3).forEach(t=> acts.push(`📋 مهمة "${t.title}" — الحالة: ${t.status}`));
@@ -1403,7 +1358,6 @@ function renderPoints(){
   document.getElementById('ptsAdded').textContent = sum.added;
   document.getElementById('ptsDeducted').textContent = sum.deducted;
 
-  // promo requirement editor (admin)
   const editor = document.getElementById('promoReqEditor');
   if(editor){
     editor.innerHTML = Object.entries(DB.promoRequirements).map(([k,v])=>{
@@ -1413,7 +1367,6 @@ function renderPoints(){
     }).join('');
   }
 
-  // ready for promotion
   const ready = DB.staff.filter(st=>{
     const nr = nextRank(st.rank);
     if(!nr) return false;
@@ -1803,7 +1756,12 @@ function openAddStaffModal(){
   showModal('إضافة موظف جديد', `
     <label class="field-label">الاسم</label><input class="field" id="newStaffName" />
     <label class="field-label">اسم Minecraft</label><input class="field" id="newStaffMc" />
-    <label class="field-label">اسم مستخدم Discord (بدون #)</label><input class="field" id="newStaffDiscord" placeholder="username" />
+    <label class="field-label">معرّف Discord (User ID)</label>
+    <input class="field" id="newStaffDiscordId" placeholder="مثال: 123456789012345678" />
+    <div class="small-muted" style="margin-top:-10px;margin-bottom:14px;line-height:1.7">
+      لتفعيل وضع المطوّر في Discord: الإعدادات ← المظهر المتقدم ← تفعيل "وضع المطور"، ثم اضغط بزر الفأرة الأيمن على اسم الشخص واختر "نسخ معرّف المستخدم".
+    </div>
+    <label class="field-label">اسم مستخدم Discord (اختياري، للعرض فقط)</label><input class="field" id="newStaffDiscord" placeholder="username" />
     <label class="field-label">البريد الإلكتروني</label><input class="field" id="newStaffEmail" />
     <label class="field-label">الرتبة</label>
     <select class="field" id="newStaffRank">${RANKS.map(r=>`<option>${r}</option>`).join('')}</select>
@@ -1811,12 +1769,15 @@ function openAddStaffModal(){
   `, ()=>{
     const name = document.getElementById('newStaffName').value.trim();
     const mc = document.getElementById('newStaffMc').value.trim();
+    const discordId = document.getElementById('newStaffDiscordId').value.trim();
     const discord = document.getElementById('newStaffDiscord').value.trim();
     const email = document.getElementById('newStaffEmail').value.trim();
     const rank = document.getElementById('newStaffRank').value;
     const dept = document.getElementById('newStaffDept').value.trim() || 'General';
     if(!name || !email){ toast('يرجى إدخال الاسم والبريد الإلكتروني.','error'); return false; }
-    DB.staff.push({id:uid('u'), name, mc, discord, email, rank, dept, joined: Date.now(), points:0, status:'offline', rating:'قيد التقييم', notes:''});
+    if(discordId && !/^\d{15,25}$/.test(discordId)){ toast('معرّف Discord يجب أن يكون أرقامًا فقط (عادة 17-19 رقمًا).','error'); return false; }
+    if(discordId && DB.staff.some(s=>s.discordId===discordId)){ toast('هذا المعرّف مرتبط بموظف آخر بالفعل.','error'); return false; }
+    DB.staff.push({id:uid('u'), name, mc, discord, discordId, email, rank, dept, joined: Date.now(), points:0, status:'offline', rating:'قيد التقييم', notes:''});
     logAudit('إضافة موظف', name);
     saveDB(); renderAll();
     toast('تمت إضافة الموظف.','success');
@@ -1827,7 +1788,12 @@ function openEditStaffModal(id){
   const s = DB.staff.find(x=>x.id===id);
   showModal('تعديل بيانات الموظف', `
     <label class="field-label">الاسم</label><input class="field" id="editStaffName" value="${escapeAttr(s.name)}" />
-    <label class="field-label">اسم مستخدم Discord (بدون #)</label><input class="field" id="editStaffDiscord" value="${escapeAttr(s.discord||'')}" placeholder="username" />
+    <label class="field-label">معرّف Discord (User ID)</label>
+    <input class="field" id="editStaffDiscordId" value="${escapeAttr(s.discordId||'')}" placeholder="مثال: 123456789012345678" />
+    <div class="small-muted" style="margin-top:-10px;margin-bottom:14px;line-height:1.7">
+      لتفعيل وضع المطوّر في Discord: الإعدادات ← المظهر المتقدم ← تفعيل "وضع المطور"، ثم اضغط بزر الفأرة الأيمن على اسم الشخص واختر "نسخ معرّف المستخدم".
+    </div>
+    <label class="field-label">اسم مستخدم Discord (اختياري، للعرض فقط)</label><input class="field" id="editStaffDiscord" value="${escapeAttr(s.discord||'')}" placeholder="username" />
     <label class="field-label">الرتبة</label>
     <select class="field" id="editStaffRank">${RANKS.map(r=>`<option ${r===s.rank?'selected':''}>${r}</option>`).join('')}</select>
     <label class="field-label">القسم</label><input class="field" id="editStaffDept" value="${escapeAttr(s.dept)}" />
@@ -1840,13 +1806,12 @@ function openEditStaffModal(id){
     </select>
   `, ()=>{
     const oldRank = s.rank;
-    const oldDiscord = (s.discord||'').toLowerCase();
+    const newDiscordId = document.getElementById('editStaffDiscordId').value.trim();
+    if(newDiscordId && !/^\d{15,25}$/.test(newDiscordId)){ toast('معرّف Discord يجب أن يكون أرقامًا فقط (عادة 17-19 رقمًا).','error'); return false; }
+    if(newDiscordId && DB.staff.some(x=>x.id!==s.id && x.discordId===newDiscordId)){ toast('هذا المعرّف مرتبط بموظف آخر بالفعل.','error'); return false; }
     s.name = document.getElementById('editStaffName').value.trim() || s.name;
-    const newDiscord = document.getElementById('editStaffDiscord').value.trim();
-    if(newDiscord.toLowerCase() !== oldDiscord){
-      s.discord = newDiscord;
-      s.discordId = ''; // username changed — drop the cached id, it'll re-link on next Discord login
-    }
+    s.discordId = newDiscordId;
+    s.discord = document.getElementById('editStaffDiscord').value.trim();
     s.rank = document.getElementById('editStaffRank').value;
     s.dept = document.getElementById('editStaffDept').value.trim() || s.dept;
     s.status = document.getElementById('editStaffStatus').value;
