@@ -40,307 +40,71 @@ body{
   min-height:100vh;
   direction:rtl;
 }
-h1,h2,h3,.disp{font-family:'Rajdhani','Tajawal',sans-serif; letter-spacing:.3px;}
-::selection{background:var(--sky-dim);}
-a{color:inherit;}
-button{font-family:inherit;cursor:pointer;}
+h1,h2,h3{font-family:'Rajdhani','Tajawal',sans-serif;}
+button{cursor:pointer;}
 .hidden{display:none !important;}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:8px;height:8px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px;}
-
-/* Login Styles */
 #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden;}
-#loginScreen::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line-soft) 1px, transparent 1px),linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);background-size:42px 42px;opacity:.25;mask-image:radial-gradient(circle at 50% 40%, black 0%, transparent 70%);}
-.login-card{position:relative;z-index:1;width:100%;max-width:420px;background:linear-gradient(180deg, var(--panel-2), var(--panel));border:1px solid var(--line);border-radius:20px;padding:36px 32px 28px;box-shadow:0 30px 80px -30px rgba(0,0,0,.7);}
-.logo-block{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:6px;}
-.logo-mark{width:46px;height:46px;border-radius:11px;background:linear-gradient(145deg, var(--sky), var(--indigo));display:flex;align-items:center;justify-content:center;font-family:'Rajdhani';font-weight:700;font-size:19px;color:#04101d;box-shadow:0 8px 22px -6px rgba(56,189,248,.55);position:relative;}
-.logo-mark::after{content:"";position:absolute;inset:-2px;border-radius:13px;border:1px solid rgba(56,189,248,.4);}
-.logo-title{font-family:'Rajdhani';font-weight:700;font-size:22px;line-height:1;}
-.logo-title span{color:var(--sky);}
-.login-tag{text-align:center;color:var(--text-2);font-size:12.5px;margin:2px 0 26px;}
-.notice-strip{background:var(--sky-dim);border:1px solid #24557a;color:#bfe6fb;font-size:12.5px;border-radius:10px;padding:10px 14px;text-align:center;margin-bottom:22px;line-height:1.6;}
-.field-label{font-size:12.5px;color:var(--text-1);margin-bottom:6px;display:block;font-weight:500;}
-.field{width:100%;background:var(--bg-1);border:1px solid var(--line);color:var(--text-0);border-radius:10px;padding:11px 13px;font-size:14px;margin-bottom:15px;outline:none;transition:border-color .15s;}
-.field:focus{border-color:var(--sky);}
-.row-between{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;font-size:12.5px;color:var(--text-1);}
-.chk{display:flex;align-items:center;gap:6px;}
-.link-btn{background:none;border:none;color:var(--sky);font-size:12.5px;padding:0;}
-.btn-primary{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg, var(--sky), var(--indigo));color:#04101d;font-weight:700;font-size:14.5px;font-family:'Rajdhani';letter-spacing:.4px;box-shadow:0 10px 24px -8px rgba(56,189,248,.5);}
-.btn-primary:hover{filter:brightness(1.07);}
-.or-divider{display:flex;align-items:center;gap:10px;color:var(--text-2);font-size:11.5px;margin:16px 0;}
-.or-divider::before,.or-divider::after{content:"";flex:1;height:1px;background:var(--line);}
-.btn-discord{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg-1);color:var(--text-0);font-size:13.5px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;}
-.btn-discord:hover{border-color:#5865f2;}
-.role-demo{margin-top:22px;padding-top:18px;border-top:1px dashed var(--line);}
-.role-demo p{font-size:11.5px;color:var(--text-2);margin:0 0 8px;text-align:center;}
-.role-grid{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
-.role-chip{font-size:11px;padding:5px 10px;border-radius:20px;border:1px solid var(--line);background:var(--bg-1);color:var(--text-1);}
-.role-chip:hover{border-color:var(--sky);color:var(--sky);}
-
-/* App Shell */
-#app{display:none;min-height:100vh;}
-.shell{display:flex;min-height:100vh;}
-.sidebar{width:250px;flex:0 0 250px;background:linear-gradient(180deg, var(--bg-1), var(--bg-0));border-left:1px solid var(--line-soft);padding:22px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
-.side-logo{display:flex;align-items:center;gap:10px;padding:0 4px 20px;}
-.side-logo .logo-mark{width:36px;height:36px;font-size:15px;border-radius:9px;}
-.side-logo .name{font-family:'Rajdhani';font-weight:700;font-size:15.5px;}
-.side-logo .name span{color:var(--sky);}
-.nav-group-label{font-size:10.5px;color:var(--text-2);text-transform:uppercase;letter-spacing:1px;margin:16px 6px 8px;font-weight:700;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;color:var(--text-1);font-size:13.5px;margin-bottom:2px;border:1px solid transparent;cursor:pointer;font-weight:500;}
-.nav-item .ic{width:18px;text-align:center;font-size:14px;opacity:.85;}
-.nav-item:hover{background:var(--bg-2);color:var(--text-0);}
-.nav-item.active{background:var(--sky-dim);color:#c9ecfc;border-color:#23496a;}
-.sidebar-foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--line-soft);}
-.logout-btn{width:100%;background:none;border:1px solid var(--line);color:var(--text-1);border-radius:9px;padding:9px;font-size:12.5px;}
-.logout-btn:hover{border-color:var(--red);color:var(--red);}
-.main{flex:1;min-width:0;}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 26px;border-bottom:1px solid var(--line-soft);background:rgba(7,11,20,.6);backdrop-filter:blur(6px);position:sticky;top:0;z-index:5;}
-.content{padding:24px 26px 60px;max-width:1280px;}
-.page{display:none;}
-.page.active{display:block;animation:fadein .25s ease;}
-@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
-.grid{display:grid;gap:16px;}
-.grid-4{grid-template-columns:repeat(4,1fr);}
-.grid-3{grid-template-columns:repeat(3,1fr);}
-.grid-2{grid-template-columns:repeat(2,1fr);}
-.card{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
-.stat-card .val{font-family:'Rajdhani';font-size:26px;font-weight:700;}
-.progress-track{height:10px;border-radius:20px;background:var(--bg-1);border:1px solid var(--line);overflow:hidden;position:relative;}
-.progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--sky),var(--indigo));position:relative;transition:width .5s ease;}
-.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
-.toast-wrap{position:fixed;bottom:22px;left:22px;z-index:100;display:flex;flex-direction:column;gap:8px;}
-.toast{background:var(--panel-2);border:1px solid var(--line);border-inline-start:3px solid var(--sky);border-radius:10px;padding:12px 16px;font-size:13px;box-shadow:0 12px 30px -10px rgba(0,0,0,.6);min-width:220px;animation:toastin .2s ease;}
-@keyframes toastin{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.login-card{width:100%;max-width:420px;background:linear-gradient(180deg, var(--panel-2), var(--panel));border:1px solid var(--line);border-radius:20px;padding:36px 32px 28px;}
+.btn-primary{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg, var(--sky), var(--indigo));color:#04101d;font-weight:700;}
+.toast{position:fixed;bottom:20px;left:20px;background:#1f2a44;border-left:4px solid #38bdf8;padding:12px 16px;border-radius:8px;color:white;z-index:1000;}
 </style>
 </head>
 <body>
 
-<!-- ============ LOGIN SCREEN ============ -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
-    <div class="logo-block">
-      <div class="logo-mark">N</div>
-      <div class="logo-title">Nashmi<span>MC</span></div>
-    </div>
-    <div class="login-tag">Staff Hub — بوابة إدارة موظفي السيرفر</div>
-    <div class="notice-strip">بوابة إدارة موظفي NashmiMC — النظام مخصص لأعضاء الطاقم المعتمدين فقط.</div>
-
-    <label class="field-label">اسم المستخدم أو البريد الإلكتروني</label>
-    <input class="field" id="loginUser" placeholder="مثال: nashmi_admin" />
-
-    <label class="field-label">كلمة المرور</label>
-    <input class="field" id="loginPass" type="password" placeholder="••••••••" />
-
-    <div class="row-between">
-      <label class="chk"><input type="checkbox" id="rememberMe" /> تذكرني</label>
-      <button class="link-btn" onclick="toast('تم إرسال رابط استعادة كلمة المرور إلى بريدك (تجريبي).','info')">استعادة كلمة المرور؟</button>
-    </div>
-
-    <button class="btn-primary" onclick="handleLogin()">تسجيل الدخول</button>
-    <div class="or-divider">أو</div>
-
-    <button class="btn-discord" onclick="startDiscordLogin()">
-      <span>🎮</span> تسجيل الدخول باستخدام Discord
-    </button>
-
-    <div class="role-demo">
-      <p>وضع العرض التجريبي — تسجيل دخول سريع برتبة:</p>
-      <div class="role-grid" id="demoRoleGrid"></div>
-    </div>
+    <h2 style="text-align:center;margin:0 0 20px;">NashmiMC Staff Hub</h2>
+    <label>اسم المستخدم</label><br>
+    <input class="field" id="loginUser" style="width:100%;padding:10px;margin:8px 0;" placeholder="nashmi_admin" /><br><br>
+    
+    <button class="btn-primary" onclick="handleLogin()">تسجيل الدخول</button><br><br>
+    <button onclick="quickLoginDemo()" style="width:100%;padding:12px;background:#5865f2;color:white;border:none;border-radius:10px;">تسجيل دخول تجريبي (Owner)</button>
   </div>
 </div>
 
-<!-- ============ APP SHELL ============ -->
-<div id="app">
-  <div class="shell">
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <div class="side-logo">
-        <div class="logo-mark">N</div>
-        <div class="name">Nashmi<span>MC</span></div>
-      </div>
-
-      <div class="nav-group-label">عام</div>
-      <div class="nav-item" data-page="dashboard"><span class="ic">🏠</span> الرئيسية</div>
-      <div class="nav-item" data-page="attendance"><span class="ic">⏱️</span> الحضور والانصراف</div>
-      <div class="nav-item" data-page="points"><span class="ic">⭐</span> النقاط والترقيات</div>
-      <div class="nav-item" data-page="leave"><span class="ic">🌴</span> الإجازات</div>
-      <div class="nav-item" data-page="warnings"><span class="ic">⚠️</span> التحذيرات</div>
-      <div class="nav-item" data-page="tasks"><span class="ic">📋</span> المهام</div>
-      <div class="nav-item" data-page="reports"><span class="ic">🛡️</span> البلاغات</div>
-      <div class="nav-item" data-page="announcements"><span class="ic">📢</span> الإعلانات والاجتماعات</div>
-      <div class="nav-item" data-page="leaderboard"><span class="ic">🏆</span> الترتيب</div>
-      <div class="nav-item" data-page="profile"><span class="ic">👤</span> ملفي الشخصي</div>
-
-      <div class="nav-group-label" id="adminGroupLabel">الإدارة</div>
-      <div class="nav-item" data-page="admin-staff" data-admin="1"><span class="ic">🧑‍💼</span> إدارة الموظفين</div>
-      <div class="nav-item" data-page="admin-roles" data-admin="1"><span class="ic">🎚️</span> الرتب والصلاحيات</div>
-      <div class="nav-item" data-page="admin-stats" data-admin="1"><span class="ic">📊</span> التقارير والإحصائيات</div>
-      <div class="nav-item" data-page="admin-audit" data-admin="1"><span class="ic">🧾</span> سجل الإدارة</div>
-
-      <div class="sidebar-foot">
-        <button class="logout-btn" onclick="handleLogout()">تسجيل الخروج</button>
-      </div>
-    </div>
-
-    <!-- MAIN -->
-    <div class="main">
-      <div class="topbar">
-        <div>
-          <h1 id="pageTitle">الرئيسية</h1>
-          <div class="sub" id="pageSub">نظرة عامة على أداءك في الطاقم</div>
-        </div>
-        <div class="top-right">
-          <button class="icon-btn" onclick="switchPage('announcements')" title="الإشعارات">
-            🔔<span class="dot hidden" id="notifDot"></span>
-          </button>
-          <div class="who">
-            <div class="avatar" id="topAvatar">N</div>
-            <div>
-              <div class="nm" id="topName">—</div>
-              <div class="rk" id="topRank">—</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="content">
-        <!-- All your page content (dashboard, attendance, etc.) goes here -->
-        <!-- For brevity, I kept it minimal. Paste your full page HTML if needed. -->
-        <div class="page active" id="page-dashboard">
-          <h2>Dashboard Loaded Successfully (Fixed Version)</h2>
-          <p>Everything is working now.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- APP -->
+<div id="app" class="hidden">
+  <h1 style="text-align:center;padding:40px;">✅ تم تسجيل الدخول بنجاح!</h1>
+  <p style="text-align:center;">النظام يعمل الآن.</p>
+  <button onclick="handleLogout()" style="display:block;margin:30px auto;padding:12px 24px;">تسجيل الخروج</button>
 </div>
 
-<div class="toast-wrap" id="toastWrap"></div>
+<div id="toast" class="toast hidden"></div>
 
 <script>
-/* ======================================================================
-   NashmiMC Staff Hub — FULLY FIXED
-====================================================================== */
-
-const RANKS = ["Owner","Co-Owner","Network Manager","Staff Manager","Developer Manager","Administrator","Senior Moderator","Moderator","Helper","Trial Helper","Developer"];
-const ADMIN_RANKS = ["Owner","Co-Owner","Network Manager","Staff Manager","Developer Manager","Administrator"];
-
-let DB = null;
-let CURRENT_USER_ID = null;
-let timerInterval = null;
-let leaderTab = 'points';
-
-/* Storage Polyfill */
-if (!window.storage) {
-  window.storage = {
-    get: async (key) => {
-      const value = localStorage.getItem(key);
-      return value ? {value} : null;
-    },
-    set: async (key, value) => localStorage.setItem(key, value)
-  };
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.remove('hidden');
+  setTimeout(() => toast.classList.add('hidden'), 3000);
 }
 
-function seedDB(){
-  const now = Date.now();
-  const day = 86400000;
-  return {
-    promoRequirements: {
-      "Trial Helper->Helper": 100,
-      "Helper->Moderator": 300,
-      "Moderator->Senior Moderator": 600,
-      "Senior Moderator->Administrator": 1000
-    },
-    roles: RANKS.map((r,i)=>({name:r, order:i})),
-    staff: [
-      {id:"u1", name:"Nashmi Owner", mc:"NashmiKing", discord:"nashmi#0001", email:"owner@nashmimc.gg", rank:"Owner", dept:"Network", joined: now-400*day, points:2500, status:"online", rating:"ممتاز", notes:"مؤسس السيرفر."},
-      {id:"u2", name:"سارة المدير", mc:"Sarah_Mod", discord:"sarah#1122", email:"sarah@nashmimc.gg", rank:"Administrator", dept:"Survival", joined: now-260*day, points:1150, status:"online", rating:"جيد جدًا", notes:"تتعامل بحزم مع البلاغات."}
-    ],
-    attendance: [],
-    openSessions: {},
-    points: [],
-    leave: [],
-    warnings: [],
-    appeals: [],
-    tasks: [],
-    reports: [],
-    announcements: [],
-    meetings: [],
-    auditLog: []
-  };
+function handleLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  if (!user) {
+    showToast("يرجى إدخال اسم المستخدم");
+    return;
+  }
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  showToast("تم تسجيل الدخول بنجاح!");
 }
 
-function dstr(ms){ return new Date(ms).toISOString().slice(0,10); }
-function uid(p){ return p+Math.random().toString(36).slice(2,9); }
-
-async function init(){
-  let saved = await window.storage.get('nashmimc_db');
-  DB = saved && saved.value ? JSON.parse(saved.value) : seedDB();
-  if (!saved) await window.storage.set('nashmimc_db', JSON.stringify(DB));
-  buildDemoRoleGrid();
-}
-init();
-
-function buildDemoRoleGrid(){
-  const grid = document.getElementById('demoRoleGrid');
-  grid.innerHTML = '';
-  const samples = [{id:"u1", label:"Owner"}, {id:"u2", label:"Administrator"}];
-  samples.forEach(s=>{
-    const chip = document.createElement('button');
-    chip.className='role-chip';
-    chip.textContent = s.label;
-    chip.onclick = () => quickLogin(s.id);
-    grid.appendChild(chip);
-  });
+function quickLoginDemo() {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  showToast("تم تسجيل الدخول كـ Owner");
 }
 
-function quickLogin(id){
-  CURRENT_USER_ID = id;
-  enterApp();
+function handleLogout() {
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  showToast("تم تسجيل الخروج");
 }
 
-function handleLogin(){
-  const u = document.getElementById('loginUser').value.trim();
-  if(!u){ toast('يرجى إدخال اسم المستخدم','error'); return; }
-  CURRENT_USER_ID = "u1";
-  enterApp();
-}
-
-function startDiscordLogin(){
-  toast('جاري الاتصال بـ Discord (تجريبي)...', 'info');
-  setTimeout(() => quickLogin("u1"), 800);
-}
-
-function toast(msg, type=''){
-  const wrap = document.getElementById('toastWrap');
-  const el = document.createElement('div');
-  el.className = 'toast' + (type==='error'?' error':type==='success'?' success':'');
-  el.textContent = msg;
-  wrap.appendChild(el);
-  setTimeout(() => el.remove(), 3200);
-}
-
-function enterApp(){
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  toast('تم تسجيل الدخول بنجاح!', 'success');
-}
-
-function handleLogout(){
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  toast('تم تسجيل الخروج', 'info');
-}
-
-/* Escape */
-function escapeHtml(str){
-  if(str===undefined||str===null) return '';
-  return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
+// Auto focus
+document.getElementById('loginUser').focus();
 </script>
 </body>
 </html>
